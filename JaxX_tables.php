@@ -1,20 +1,20 @@
 <?php
 /**
- * JaxX_tables - Moteur de rendu de tableaux PHP/JS multi-instances
- * 
- * @version   2.0.0-Beta
- * @author    JaxX - AnunaQi.com
- * @link      https://anunaqi.com
- * @link      https://github.com/JaxProd/JaxX_tables
- * @license   CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0)
- * 
- * Utilisation autorisée pour projets non-commerciaux. 
- * Interdiction de vente ou d'utilisation lucrative sans accord préalable.
  * ================================================================
  * FICHIER : JaxX_tables.php
  * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.php
  * SHORT_DESC : Moteur de rendu de tableaux multi-instances (JaxX V2).
- * DESCRIPTION : Module SaaS-ready permettant d'afficher des données tabulaires dynamiques.
+ * DESCRIPTION : 
+ * Module <b>SaaS-ready</b> permettant d'afficher des données tabulaires dynamiques. <br><br>
+ * <ul style="margin: 5px 0 0 20px;">
+ *   <li><strong>Modes d'affichage</strong> : Bascule entre mode <b>Tableau</b> et mode <b>Cartes</b> (Cards).</li>
+ *   <li><strong>Interactivité</strong> : Drag & Drop des colonnes, redimensionnement manuel et Auto-fit.</li>
+ *   <li><strong>Données</strong> : Supporte le mode statique (Array PHP) et le mode AJAX (Infinite Scroll).</li>
+ *   <li><strong>ClipBoard</strong> : Copie de données (cellule ou ligne complète format tableur).</li>
+ *   <li><strong>Filtres & Tri</strong> : Recherche globale (debounce 300ms), filtres checkbox et plages de dates.</li>
+ *   <li><strong>Persistance</strong> : Sauvegarde auto dans le <code>localStorage</code> (ordre, largeur, masquage).</li>
+ *   <li><strong>Export</strong> : Export CSV intégré.</li>
+ * </ul>
  *
  * SOMMAIRE : [CTRL+D]
  *   - [RENDER]   : Point d'entrée principal (return_JaxX_table)
@@ -23,9 +23,19 @@
  *   - [CONTROLS] : Barre d'outils et recherche globale
  *
  * MODIFICATIONS :
+ *   - 01/04/2026 03:40 : [IA] Ajout des fonctionnalités détaillées et champ LICENCE.
  *   - 31/03/2026 16:00 : [IA] Header colonne : 1 ligne (sort-asc | label+filtre | sort-desc).
  *   - 31/03/2026 03:05 : [IA] Réécriture complète et correction structurelle.
  *
+ * LICENCE :
+ * @version   2.0.0-Beta
+ * @author    JaxX - AnunaQi.com
+ * @link      https://www.AnunaQi.com
+ * @link      https://github.com/JaxProd/JaxX_tables
+ * @license   CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0)
+ * 
+ * Utilisation autorisée pour projets non-commerciaux. 
+ * Interdiction de vente ou d'utilisation lucrative sans accord préalable.
  * ================================================================
  */
 

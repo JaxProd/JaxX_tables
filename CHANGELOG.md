@@ -2,11 +2,20 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [Unreleased] - 2026-04-01 04:10
+### 🚀 UX & Fonctionnalités Premium
+- 01/04/2026 04:15 : [IA] Copie de ligne "Auto-contenue" (`copyRow`) : les images sont désormais physiquement embarquées (Base64) dans le format HTML pour un collage parfait dans Excel/Word sans dépendance URL.
+- 01/04/2026 04:10 : [IA] Copie d'image intelligente (`copyCell`) : les cellules `jx_col_visuel` copient désormais l'image physique (Blob PNG via Canvas).
+- 01/04/2026 04:00 : [IA] Rafraîchissement de la Section 4 avec de nouvelles données (Cyberpunk, Cinéma, Art).
+
+## [Unreleased] - 2026-04-01 03:54
+### 🛠️ Documentation Technique (Admin)
+- 01/04/2026 03:54 : [IA] Standardisation des en-têtes (7 champs) dans `JaxX_tables.php` et `JaxX_tables.js`.
+- 01/04/2026 03:54 : [IA] Mise à jour du parseur (`_adm_Tech_Documentation_brain.php`) : extraction multi-champs, support HTML dans la description.
+- 01/04/2026 03:54 : [IA] Interactivité : URLs détectées automatiquement transformées en liens cliquables (`target="_blank"`).
+- 01/04/2026 03:54 : [IA] Robustesse : Correction du parseur pour les sommaires contenant des tags `[CTRL+D]`.
+
 ## [Unreleased] - 2026-04-01 03:36
-### ⚖️ Licence & Crédits
-- 01/04/2026 03:36 : [IA] Ajout de la licence **CC BY-NC-SA 4.0** (Non-lucrative).
-- 01/04/2026 03:36 : [IA] Insertion des filigranes techniques (headers) avec liens vers **AnunaQi.com** et GitHub dans tous les fichiers sources.
-- 01/04/2026 03:36 : [IA] Création des fichiers `LICENSE` et `.gitignore`.
 
 ## [Unreleased] - 2026-04-01 03:20
 ### 📝 Documentation

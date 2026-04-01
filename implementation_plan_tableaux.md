@@ -127,7 +127,8 @@ echo return_JaxX_table($array_table);
 | Ajustement auto colonne (double-clic) | ✅ | Mesure `getBoundingClientRect` style Excel |
 | Masquage de colonnes | ✅ | Popover checkbox, persisté en localStorage |
 | Export CSV | ✅ | Données visibles dans le DOM |
-| Copie cellule / copie ligne | ✅ | Clipboard API, feedback visuel |
+| Copie cellule — Binaire Image | ✅ | Capture physique (Blob PNG) via Canvas |
+| Copie ligne — Hybride Office/Chat | ✅ | Base64 HTML (Office) + Texte structuré (WhatsApp) |
 | Persistance localStorage | ✅ | Ordre, largeurs, mode, filtres, colonnes masquées |
 | Versionnement du state (anti-corruption) | ✅ | `JX_STATE_VERSION = "5"` — auto-purge |
 | Animations d'apparition des lignes | ✅ | Stagger séquentiel |
@@ -357,7 +358,6 @@ Pour migrer une page :
 
 | Date | Auteur | Action |
 |---|---|---|
-| 01/04/2026 | IA | Correction de la mise en forme du README.md |
 | 01/04/2026 | IA | Réécriture complète — reflet de l'état implémenté v2.0-Beta |
 | 31/03/2026 | IA | Plan d'implémentation initial v1.0 |
 

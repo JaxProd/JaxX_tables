@@ -13,7 +13,7 @@
 > Interdiction de vente ou d'utilisation lucrative sans accord préalable.
 
 **Liens utiles :**
-*   **Site Web** : [AnunaQi.com](https://anunaqi.com)
+*   **Site Web** : [AnunaQi.com](https://www.AnunaQi.com)
 *   **Dépôt GitHub** : [JaxX_tables](https://github.com/JaxProd/JaxX_tables)
 
 ---
@@ -23,6 +23,7 @@
 * **Modes d'affichage** : Bascule entre mode **Tableau** et mode **Cartes** (Cards).
 * **Interactivité** : Drag & Drop des colonnes, redimensionnement manuel et Auto-fit (double-clic).
 * **Données** : Supporte le mode statique (Array PHP) et le mode AJAX (Infinite Scroll).
+* **ClipBoard** : Copie de données dans le presse-papier : donnée individuelle ou ligne sous forme tableur.
 * **Filtres & Tri** : Recherche globale (debounce 300ms), filtres par cases à cocher et plages de dates.
 * **Persistance** : Sauvegarde auto dans le `localStorage` (ordre, largeur, colonnes masquées).
 * **Export & Copie** : Export CSV et API de copie dans le presse-papier intégrée.
@@ -130,11 +131,19 @@ Le module utilise des variables CSS isolées. Vous pouvez les surcharger dans vo
     --jx-table-radius: 8px;
 }
 ```
+---
+
+### 🌟 Fonctionnalités Premium (V2.0-Beta - 01/04/2026)
+
+#### 1. Copie Intelligente & Binaire (`[COPY]`)
+*   **Cellule Visuelle** : Sur les colonnes `jx_col_visuel`, le clic sur l'icône de copie ne copie plus le lien, mais le **binaire physique** (Blob PNG) via une conversion Canvas dynamique. Collage direct possible dans Discord, Photoshop, etc.
+*   **Copie de Ligne "Auto-contenue"** :
+    *   **Format Office (Excel/Word)** : Génère un tableau HTML riche avec images **embarquées en Base64**. L'image est stockée dans le document, pas de lien mort possible.
+    *   **Format Chat (WhatsApp/FB)** : Génère un texte structuré lisible `Label : Valeur | Label : Valeur`.
+
+#### 2. Galerie de Démonstration (Section 4)
+Le dataset de démonstration a été rafraîchi avec des visuels HD thématiques (Cyberpunk, Cinéma, Art) pour tester les rendus `jx_col_visuel` et les performances de copie binaire.
 
 ---
 
-<<<<<<< HEAD
-Dernière mise à jour : 01/04/2026 — Documentation Technique JaxX_tables.
-=======
-Dernière mise à jour : 01/04/2026 — Documentation Technique JaxX_tables.
->>>>>>> e7a52c9 ([IA] Mise à jour Documentation README + Stabilisation v2.0-Beta)
+Dernière mise à jour : 01/04/2026 04:30 — Documentation Technique JaxX_tables v2.0.0-Beta par IA.

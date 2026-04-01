@@ -114,28 +114,82 @@ $array_multi_b = [
 ];
 
 /**
- * [CTRL+D] [DATA_S4] : MODE CARTES
+ * [CTRL+D] [DATA_S4] : MODE CARTES (Galerie Premium)
  */
 $array_cards = [
-	'table_id'     => 'table_cards_default',
+	'table_id'     => 'table_cards_gallery',
 	'display_mode' => 'cards',
 	'expandable'   => true,
 	'columns'      => [
-		'photo'     => ['label' => 'Photo'],
-		'type'      => ['label' => 'Type', 'filterable' => true],
-		'modele'    => ['label' => 'Modèle', 'sortable' => true, 'filterable' => true],
-		'puissance' => ['label' => 'Max kW', 'sortable' => true]
+		'visuel'    => ['label' => 'Aperçu'],
+		'univers'   => ['label' => 'Univers', 'filterable' => true],
+		'titre'     => ['label' => 'Œuvre / Modèle', 'sortable' => true, 'filterable' => true],
+		'vibe'      => ['label' => 'Atmosphère']
 	],
 	'data' => [
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=300&h=200&fit=crop\' alt=\'Borne de recharge\'>', 'type' => 'Wallbox',  'modele' => 'Pulse AC',       'puissance' => '22',  'jx_expand_content' => 'Wallbox compacte pour installation domestique. Compatible avec tous les véhicules AC.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=300&h=200&fit=crop\' alt=\'Borne rapide\'>', 'type' => 'Borne DC', 'modele' => 'Hyper 150',      'puissance' => '150', 'jx_expand_content' => 'Borne rapide DC pour stations-service et aires d\'autoroute.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1647166545674-ce28ce93bdca?w=300&h=200&fit=crop\' alt=\'Station recharge\'>', 'type' => 'Borne DC', 'modele' => 'Flash 50',       'puissance' => '50',  'jx_expand_content' => 'Borne DC semi-rapide pour centres commerciaux et parkings publics.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=300&h=200&fit=crop\' alt=\'Home charger\'>', 'type' => 'Wallbox',  'modele' => 'Home Charge',    'puissance' => '11',  'jx_expand_content' => 'Solution économique pour la recharge à domicile.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=300&h=200&fit=crop\' alt=\'Ultra rapide\'>', 'type' => 'Borne DC', 'modele' => 'Ultra Rapid',    'puissance' => '350', 'jx_expand_content' => 'Ultra-rapide 350kW. Recharge 10-80% en 15 minutes.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1647166545674-ce28ce93bdca?w=300&h=200&fit=crop\' alt=\'Eco charge\'>', 'type' => 'Wallbox',  'modele' => 'EcoCharge',      'puissance' => '7',   'jx_expand_content' => 'Wallbox entrée de gamme, idéale pour recharge nocturne.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=300&h=200&fit=crop\' alt=\'City power\'>', 'type' => 'Borne AC', 'modele' => 'City Power',     'puissance' => '43',  'jx_expand_content' => 'Borne AC rapide pour bornes de voirie en milieu urbain.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=300&h=200&fit=crop\' alt=\'Smart wall\'>', 'type' => 'Wallbox',  'modele' => 'SmartWall Pro',  'puissance' => '22',  'jx_expand_content' => 'Wallbox intelligente avec suivi de consommation et pilotage via app.'],
-		['photo' => '<img src=\'https://images.unsplash.com/photo-1647166545674-ce28ce93bdca?w=300&h=200&fit=crop\' alt=\'Mega charge\'>', 'type' => 'Borne DC', 'modele' => 'MegaCharge 250', 'puissance' => '250', 'jx_expand_content' => 'Station de recharge multi-connecteurs pour flottes professionnelles.']
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=260&fit=crop\' alt=\'Cyberpunk City\'>',
+			'univers'   => 'Cyberpunk',
+			'titre'     => 'Neo-Tokyo 2077',
+			'vibe'      => 'Néon & Pluie',
+			'jx_expand_content' => 'Une vue cinématique d\'une métropole futuriste baignée dans des lumières néons roses et bleues. Parfait pour tester le rendu de couleurs saturées.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=260&fit=crop\' alt=\'Cinema\'>',
+			'univers'   => 'Cinématique',
+			'titre'     => 'The Last Frame',
+			'vibe'      => 'Film Noir',
+			'jx_expand_content' => 'Inspiration grand écran avec un grain pellicule marqué et un éclairage dramatique en clair-obscur.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=260&fit=crop\' alt=\'Fine Art\'>',
+			'univers'   => 'Beaux-Arts',
+			'titre'     => 'Floral Abstract',
+			'vibe'      => 'Peinture',
+			'jx_expand_content' => 'Exploration de textures organiques et de pigments profonds. Un rendu "Art Moderne" pour valider la douceur des ombres portées des cartes.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=260&fit=crop\' alt=\'Architecture\'>',
+			'univers'   => 'Architecture',
+			'titre'     => 'Glass Horizon',
+			'vibe'      => 'Minimaliste',
+			'jx_expand_content' => 'Lignes pures et reflets cristallins. Ce visuel architectural met en avant la précision des bordures du module JaxX_tables.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400&h=260&fit=crop\' alt=\'Sci-Fi\'>',
+			'univers'   => 'Cyberpunk',
+			'titre'     => 'Data Core',
+			'vibe'      => 'Technologique',
+			'jx_expand_content' => 'Représentation abstraite de serveurs et de flux de données. Indispensable pour un dashboard tech.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=260&fit=crop\' alt=\'Nature\'>',
+			'univers'   => 'Cinématique',
+			'titre'     => 'Alpine Echo',
+			'vibe'      => 'Nature Sauvage',
+			'jx_expand_content' => 'Grands espaces et profondeur de champ. Un paysage majestueux pour tester la fluidité du passage Tableau -> Cartes.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=400&h=260&fit=crop\' alt=\'Graphic Design\'>',
+			'univers'   => 'Beaux-Arts',
+			'titre'     => 'Bauhaus Study',
+			'vibe'      => 'Géométrique',
+			'jx_expand_content' => 'Formes primaires et équilibre visuel. Idéal pour vérifier l\'alignement des textes sous les images.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1533134486753-c833f0ed4866?w=400&h=260&fit=crop\' alt=\'Night Life\'>',
+			'univers'   => 'Cyberpunk',
+			'titre'     => 'Neon District',
+			'vibe'      => 'Nocturne',
+			'jx_expand_content' => 'L\'énergie de la ville la nuit. Les contrastes élevés permettent de juger la lisibilité des badges sur fond sombre.'
+		],
+		[
+			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1493335129889-328bc3a13bed?w=400&h=260&fit=crop\' alt=\'Art Photography\'>',
+			'univers'   => 'Cinématique',
+			'titre'     => 'Vintage Vibe',
+			'vibe'      => 'Rétro',
+			'jx_expand_content' => 'Un portrait au look 70s pour apporter une touche humaine et chaleureuse à la galerie.'
+		]
 	]
 ];
 

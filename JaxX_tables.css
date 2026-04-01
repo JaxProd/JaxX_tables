@@ -432,6 +432,10 @@ button.jx_copy_btn.jx_copy_row:hover {
   padding: 8px 0;
 }
 
+.jx_mode_cards td.jx_cell.jx_col_visuel {
+    padding-top: 2em;
+}
+
 .jx_mode_cards .jx_cell::before
 {
   content: attr(data-label) " : ";
@@ -1038,4 +1042,80 @@ body.jx_resizing * { cursor: col-resize !important; }
   .jx_toolbar_sort_filter { flex-wrap: wrap; }
   .jx_cell img { max-height: 50px; }
   .jx_help_popover { width: 260px; }
+}
+
+/* ============================================================
+   19. INTERACTIONS & PRESS-PAPIER
+   ============================================================ */
+.jx_copy_btn
+{
+  background: none;
+  border: none;
+  color: inherit;
+  opacity: 0.3;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.jx_copy_btn:hover
+{
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cyan-accent, #00f2ff);
+}
+
+.jx_copy_btn .material-symbols-outlined
+{
+  font-size: 16px !important;
+}
+
+/* État : Copié avec succès */
+.jx_copy_btn.jx_copied
+{
+  opacity: 1;
+  color: #00ff88 !important; /* Vert succès */
+  transform: scale(1.2);
+}
+
+/* État : En cours de traitement (Copie binaire) */
+.jx_copy_btn.jx_copying
+{
+  opacity: 0.6;
+  pointer-events: none;
+  animation: jx_copy_rotate 1s linear infinite;
+}
+
+@keyframes jx_copy_rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Positionnement spécifique dans la cellule */
+.jx_cell_wrapper .jx_copy_btn
+{
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none; /* Masqué par défaut, révélé au hover de la cellule */
+}
+
+.jx_cell:hover .jx_copy_btn
+{
+  display: flex;
+}
+
+.jx_mode_cards .jx_cell_wrapper .jx_copy_btn
+{
+  position: relative;
+  right: auto;
+  top: auto;
+  transform: none;
+  display: flex;
+  opacity: 0.2;
 }

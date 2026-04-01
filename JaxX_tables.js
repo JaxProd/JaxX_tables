@@ -1,21 +1,19 @@
 /**
- * JaxX_tables - Moteur de rendu de tableaux PHP/JS multi-instances
- * 
- * @version   2.0.0-Beta
- * @author    JaxX - AnunaQi.com
- * @link      https://anunaqi.com
- * @link      https://github.com/JaxProd/JaxX_tables
- * @license   CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0)
- * 
- * Utilisation autorisée pour projets non-commerciaux. 
- * Interdiction de vente ou d'utilisation lucrative sans accord préalable.
  * ================================================================
  * FICHIER : JaxX_tables.js
  * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.js
  * SHORT_DESC : Moteur JS multi-instances pour tableaux JaxX V2.
- * DESCRIPTION : Gère le tri, les filtres checkbox, le mode cartes,
- *               le drag & drop de colonnes, l'export CSV, la copie
- *               et la persistance localStorage.
+ * DESCRIPTION : 
+ * Gère l'interactivité avancée des tableaux dynamiques JaxX. <br><br>
+ * <ul style="margin: 5px 0 0 20px;">
+ *   <li><strong>Modes d'affichage</strong> : Bascule entre mode <b>Tableau</b> et mode <b>Cartes</b> (Cards).</li>
+ *   <li><strong>Interactivité</strong> : Drag & Drop des colonnes, redimensionnement manuel et Auto-fit.</li>
+ *   <li><strong>Données</strong> : Supporte le mode statique (Array PHP) et le mode AJAX (Infinite Scroll).</li>
+ *   <li><strong>ClipBoard</strong> : Copie de données (cellule ou ligne complète format tableur).</li>
+ *   <li><strong>Filtres & Tri</strong> : Recherche globale (debounce 300ms), filtres checkbox et plages de dates.</li>
+ *   <li><strong>Persistance</strong> : Sauvegarde auto dans le <code>localStorage</code> (ordre, largeur, masquage).</li>
+ *   <li><strong>Export</strong> : Export CSV intégré.</li>
+ * </ul>
  *
  * SOMMAIRE : [CTRL+D]
  *   - [CONSTRUCTOR] : Instanciation & propriétés
@@ -36,10 +34,20 @@
  *   - [AUTOINIT]    : Initialisation automatique
  *
  * MODIFICATIONS :
+ *   - 01/04/2026 03:40 : [IA] Ajout des fonctionnalités détaillées et champ LICENCE.
  *   - 31/03/2026 17:00 : [IA] Colonnes redimensionnables + persistence des largeurs.
  *   - 31/03/2026 16:00 : [IA] Filtre date range + popover amélioré + icônes check-actions.
  *   - 31/03/2026 05:07 : [IA] Restauration complète — stabilisation.
  *
+ * LICENCE :
+ * @version   2.0.0-Beta
+ * @author    JaxX - AnunaQi.com
+ * @link      https://www.AnunaQi.com
+ * @link      https://github.com/JaxProd/JaxX_tables
+ * @license   CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0)
+ * 
+ * Utilisation autorisée pour projets non-commerciaux. 
+ * Interdiction de vente ou d'utilisation lucrative sans accord préalable.
  * ================================================================
  */
 
@@ -1511,46 +1519,211 @@
 		// ============================================================
 		copyCell: function(btn)
 		{
-			var text = btn.closest(".jx_cell").find(".jx_cell_val").text().trim();
-			navigator.clipboard.writeText(text);
-			btn.addClass("jx_copied");
-			setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+			var self = this;
+			var cell = btn.closest(".jx_cell");
+
+			// Cas spécifique pour la colonne visuelle (image binaire)
+			if (cell.hasClass("jx_col_visuel"))
+			{
+				var img = cell.find("img")[0];
+				if (img)
+				{
+					this.copyBinaryImage(img.src, btn);
+					return;
+				}
+			}
+
+			// Comportement par défaut (texte)
+			var text = cell.find(".jx_cell_val").text().trim();
+			if (!text) text = btn.attr("data-copy") || "";
+
+			navigator.clipboard.writeText(text).then(function()
+			{
+				btn.addClass("jx_copied");
+				setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+			});
+		},
+
+		copyBinaryImage: function(url, btn)
+		{
+			var self = this;
+			btn.addClass("jx_copying");
+
+			// Utilisation d'un Canvas pour forcer le format PNG (mieux supporté par le clipboard OS)
+			var img = new Image();
+			img.crossOrigin = "anonymous"; // Nécessaire pour les sites comme Unsplash avec CORS
+			img.src = url;
+
+			img.onload = function()
+			{
+				var canvas = document.createElement("canvas");
+				canvas.width = img.naturalWidth;
+				canvas.height = img.naturalHeight;
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0);
+
+				canvas.toBlob(function(blob)
+				{
+					if (!blob)
+					{
+						btn.removeClass("jx_copying");
+						return;
+					}
+
+					try
+					{
+						var item = new ClipboardItem({ "image/png": blob });
+						navigator.clipboard.write([item]).then(function()
+						{
+							btn.removeClass("jx_copying").addClass("jx_copied");
+							setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+						});
+					}
+					catch (err)
+					{
+						// Fallback texte/URL si ClipboardItem échoue
+						navigator.clipboard.writeText(url).then(function()
+						{
+							btn.removeClass("jx_copying").addClass("jx_copied");
+							setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+						});
+					}
+				}, "image/png");
+			};
+
+			img.onerror = function()
+			{
+				// Fallback sur l'URL si on ne peut pas charger l'image (CORS restrictif)
+				navigator.clipboard.writeText(url).then(function()
+				{
+					btn.removeClass("jx_copying").addClass("jx_copied");
+					setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+				});
+			};
 		},
 
 		copyRow: function(btn)
 		{
+			var self = this;
 			var row = btn.closest(".jx_row");
-			var vals = [];
+			btn.addClass("jx_copying");
 
-			// Ne copier que les colonnes visibles (pas les masquées, pas expand/actions)
+			var columns = [];
 			row.find(".jx_cell[data-label]").each(function()
 			{
 				if (!$(this).hasClass("jx_col_hidden"))
 				{
-					vals.push($(this).find(".jx_cell_val").text().trim());
+					// Extraction propre de l'ID de colonne depuis la classe jx_col_...
+					var classList = $(this).attr("class");
+					var match = classList.match(/jx_col_([^\s]+)/);
+					var colId = match ? match[1] : "";
+
+					columns.push({
+						id: colId,
+						label: $(this).attr("data-label"),
+						cell: $(this)
+					});
 				}
 			});
 
-			// Format TSV pour tableurs (tab entre colonnes)
-			var tsv = vals.join("\t");
-
-			// Format HTML table pour un collage riche (Excel/Sheets)
-			var htmlRow = "<table><tr>" + vals.map(function(v) { return "<td>" + v + "</td>"; }).join("") + "</tr></table>";
-
-			// Écrire les deux formats dans le clipboard
-			if (navigator.clipboard && navigator.clipboard.write)
+			// On prépare toutes les promesses de récupération de données (texte ou image Base64)
+			var promises = columns.map(function(col)
 			{
-				var blobText = new Blob([tsv],    { type: "text/plain" });
-				var blobHtml = new Blob([htmlRow], { type: "text/html" });
-				navigator.clipboard.write([new ClipboardItem({ "text/plain": blobText, "text/html": blobHtml })]);
-			}
-			else
-			{
-				navigator.clipboard.writeText(tsv);
-			}
+				// Si c'est une colonne visuelle, on encode l'image en Base64 pour Word/Excel
+				if (col.cell.hasClass("jx_col_visuel"))
+				{
+					var img = col.cell.find("img");
+					if (img.length)
+					{
+						var url = img.attr("src");
+						return self.getImageBase64(url).then(function(b64)
+						{
+							return { label: col.label, val: b64, isImage: true, url: url };
+						});
+					}
+				}
+				
+				// Sinon, on récupère le texte brut
+				var txt = col.cell.find(".jx_cell_val").text().trim();
+				return Promise.resolve({ label: col.label, val: txt, isImage: false });
+			});
 
-			btn.addClass("jx_copied");
-			setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+			// Une fois que tout est prêt (images encodées)
+			Promise.all(promises).then(function(results)
+			{
+				// 1. Version Chat (Plain Text) — Lisible avec labels et URLs
+				var chatText = results.map(function(r)
+				{
+					var val = r.isImage ? r.url : r.val;
+					return r.label + " : " + val;
+				}).join(" | ");
+
+				// 2. Version Tableur/Word (HTML) — Avec images embarquées en Base64
+				var htmlCells = results.map(function(r)
+				{
+					var content = r.isImage ? "<img src='" + r.val + "' width='100' style='max-width:100px; display:block;'>" : r.val;
+					return "<td>" + content + "</td>";
+				}).join("");
+				var htmlTable = "<table><tr>" + htmlCells + "</tr></table>";
+
+				// Écriture multidimensionnelle dans le Clipboard
+				if (navigator.clipboard && navigator.clipboard.write)
+				{
+					var blobText = new Blob([chatText],  { type: "text/plain" });
+					var blobHtml = new Blob([htmlTable], { type: "text/html" });
+
+					try
+					{
+						var item = new ClipboardItem({ "text/plain": blobText, "text/html": blobHtml });
+						navigator.clipboard.write([item]).then(function()
+						{
+							btn.removeClass("jx_copying").addClass("jx_copied");
+							setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+						});
+					}
+					catch (e)
+					{
+						// Fallback texte simple
+						navigator.clipboard.writeText(chatText).then(function()
+						{
+							btn.removeClass("jx_copying").addClass("jx_copied");
+							setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+						});
+					}
+				}
+				else
+				{
+					// Fallback navigateur obsolète
+					navigator.clipboard.writeText(chatText);
+					btn.removeClass("jx_copying").addClass("jx_copied");
+					setTimeout(function() { btn.removeClass("jx_copied"); }, 2000);
+				}
+			});
+		},
+
+		getImageBase64: function(url)
+		{
+			return new Promise(function(resolve)
+			{
+				var img = new Image();
+				img.crossOrigin = "anonymous";
+				img.src = url;
+				img.onload = function()
+				{
+					var canvas = document.createElement("canvas");
+					canvas.width = img.naturalWidth;
+					canvas.height = img.naturalHeight;
+					var ctx = canvas.getContext("2d");
+					ctx.drawImage(img, 0, 0);
+					// On convertit en PNG Base64
+					resolve(canvas.toDataURL("image/png"));
+				};
+				img.onerror = function()
+				{
+					// En cas d'erreur (CORS...), on renvoie l'URL telle quelle
+					resolve(url);
+				};
+			});
 		},
 
 		// ============================================================
