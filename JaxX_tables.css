@@ -1,0 +1,1033 @@
+/**
+ * ================================================================
+ * FICHIER : JaxX_tables.css
+ * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.css
+ * SHORT_DESC : CSS structurel du module JaxX_tables.
+ * DESCRIPTION : Contient UNIQUEMENT le layout, les dimensions, les resets
+ *               et la structure. Aucune couleur, ombre ou animation.
+ *               Le design visuel doit être défini dans le CSS de destination.
+ *
+ * MODIFICATIONS :
+ *   - 31/03/2026 17:00 : [IA] Section 14 — poignée de redimensionnement des colonnes.
+ *   - 31/03/2026 16:00 : [IA] Header colonne 1 ligne + popover amélioré + date range.
+ *   - 31/03/2026 04:46 : [IA] Réécriture — séparation structurel/thème.
+ *
+ * ================================================================
+ */
+@charset "utf-8";
+/* ============================================================
+   1. VARIABLES DIMENSIONNELLES
+   ============================================================ */
+.jx_table_wrapper
+{
+  --jx-cell-height: 2.4em;
+  --jx-card-width: 280px;
+  --jx-card-gap: 1em;
+  --jx-popover-width: 240px;
+  --jx-table-max-height: 70vh;
+  --jx-table-radius: 8px;
+  --jx-card-img-height: 160px;
+}
+
+/* ============================================================
+   2. WRAPPER PRINCIPAL
+   ============================================================ */
+.jx_table_wrapper
+{
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.jx_table_wrapper.jx_mode_cards table {
+    width: 100% !important;
+}
+/* ============================================================
+   3. BARRE DE CONTRÔLES
+   ============================================================ */
+.jx_table_controls
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.jx_control_left { display: flex; align-items: center; gap: 8px; flex: 1; }
+.jx_control_right { display: flex; align-items: center; gap: 4px; }
+
+.jx_search_wrapper
+{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  max-width: 300px;
+}
+
+.jx_search_wrapper input
+{
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+}
+
+/* Boutons génériques */
+.jx_bt
+{
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   4. TOOLBAR (mode cartes)
+   ============================================================ */
+.jx_table_toolbar
+{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  flex-wrap: wrap;
+}
+
+.jx_toolbar_group
+{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.jx_toolbar_label
+{
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   5. CONTENEUR DE DÉFILEMENT + TABLE
+   ============================================================ */
+.jx_table_scroll_container
+{
+  width: 100%;
+  max-height: var(--jx-table-max-height, 70vh);
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: var(--jx-table-radius);
+  position: relative;
+}
+
+.jx_table_element
+{
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* ============================================================
+   5b. IMAGES DANS LES CELLULES
+   ============================================================ */
+.jx_cell img
+{
+  max-width: 100%;
+  height: auto;
+  max-height: 80px;
+  object-fit: contain;
+  vertical-align: middle;
+  border-radius: 4px;
+}
+
+.jx_mode_cards .jx_cell img
+{
+  max-height: none;
+  width: 100%;
+  max-height: var(--jx-card-img-height);
+  object-fit: cover;
+  border-radius: var(--jx-table-radius) var(--jx-table-radius) 0 0;
+  margin: -12px -12px 8px -12px;
+  width: calc(100% + 24px);
+}
+
+/* ============================================================
+   6. EN-TÊTE (thead)
+   ============================================================ */
+.jx_table_element thead
+{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.jx_table_element thead th
+{
+  text-align: left;
+  padding: 10px 12px;
+  position: relative;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+/* Ligne unique : [sort-asc] [label + filtre] [sort-desc] */
+.jx_col_header_row
+{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.jx_col_label
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.jx_col_expand_header { width: 40px; }
+
+/* ============================================================
+   7. LIGNES DE DONNÉES (tbody)
+   ============================================================ */
+.jx_row
+{
+  min-height: var(--jx-cell-height);
+}
+
+.jx_cell
+{
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+.jx_mode_table .jx_cell {
+    border-right: #0000002b 1px solid;
+}
+
+
+.jx_cell_wrapper
+{
+  /* display: flex; */
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.jx_cell_val
+{
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jx_col_expand_trigger
+{
+  width: 40px;
+  text-align: center;
+}
+
+.jx_expand_bt
+{
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.jx_expanded .jx_expand_bt { transform: rotate(90deg); }
+
+/* Détails dépliables */
+.jx_row_details { display: none; }
+.jx_details_content { padding: 12px 16px; }
+
+/* Colonne d'actions */
+.jx_cell_actions { width: 40px; text-align: center; }
+.jx_col_actions_header { width: 40px; }
+
+/* ============================================================
+   8. BOUTONS TRI / FILTRE (resets)
+   ============================================================ */
+.jx_sort_bt
+{
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+.jx_sort_bt:hover,
+.jx_sort_bt.jx_active { opacity: 1; }
+
+.jx_sort_bt span { font-size: 20px !important; }
+
+.jx_filter_col_bt
+{
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+.jx_filter_col_bt:hover,
+.jx_filter_col_bt.jx_active { opacity: 1; }
+
+.jx_filter_col_bt span { font-size: 16px; }
+
+/* ============================================================
+   9. BOUTONS DE COPIE
+   ============================================================ */
+.jx_copy_btn
+{
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+button.jx_copy_btn.jx_copy_row {
+    color: var(--sky-400);
+    transition: all ease .6s;
+}
+
+button.jx_copy_btn.jx_copy_row:hover {
+    transform: scale(1.5);
+}
+.jx_copy_btn span { font-size: 16px; }
+
+/* Par défaut : caché au desktop, visible au touch */
+.jx_copy_cell {opacity: 0;transition: opacity 0.2s ease;position: absolute;right: 0;top: 0em;}
+.jx_cell_wrapper:hover .jx_copy_cell { opacity: 1; }
+
+/* Mode table : colonne d'actions cachée */
+.jx_mode_table .jx_cell_actions {/* display: none; */}
+.jx_mode_table .jx_col_actions_header {/* display: none; */}
+
+/* Touch devices : toujours visible */
+@media (hover: none)
+{
+  .jx_copy_cell { opacity: 1; }
+  .jx_mode_table .jx_cell_actions { display: table-cell; }
+  .jx_mode_table .jx_col_actions_header { display: table-cell; }
+}
+
+/* ============================================================
+   10. MODE CARTES
+   ============================================================ */
+.jx_mode_cards .jx_table_element thead { display: none; }
+
+.jx_mode_cards .jx_table_body
+{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--jx-card-gap);
+  /* gap: 15.05% 7%; */
+  padding: 8px;
+  justify-content: center;
+}
+
+.jx_mode_cards .jx_row
+{
+  display: flex;
+  flex-direction: column;
+  width: var(--jx-card-width);
+  min-width: var(--jx-card-width);
+  position: relative;
+  overflow: hidden;
+}
+
+.jx_mode_cards .jx_table_scroll_container
+{
+  overflow: visible;
+  max-height: none;
+}
+
+.jx_mode_cards .jx_row_details
+{
+  display: none;
+  width: 100%;
+}
+.jx_mode_cards .jx_col_expand_trigger,
+.jx_mode_cards th[data-col-id="jx_expand"],
+.jx_mode_cards td[data-col-id="jx_expand"]
+{
+  display: none !important;
+}
+
+/* Bouton "+ Info" en bas de carte */
+.jx_card_info_btn
+{
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  margin-top: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-align: center;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  color: inherit;
+  border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+.jx_card_info_btn:hover { opacity: 1; }
+.jx_card_info_btn.jx_active { opacity: 1; }
+
+/* Masquer le label "Photo :" quand la cellule contient une image */
+.jx_mode_cards .jx_cell:has(img)::before
+{
+  display: none !important;
+}
+.jx_mode_cards .jx_cell:has(img)
+{
+  text-align: center;
+}
+.jx_mode_cards .jx_cell:has(img) .jx_cell_wrapper
+{
+  justify-content: center;
+}
+
+.jx_mode_cards .jx_cell
+{
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.jx_mode_cards .jx_cell::before
+{
+  content: attr(data-label) " : ";
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+
+/* Mode cartes : colonne d'actions visible */
+.jx_mode_cards .jx_cell_actions
+{
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0;
+  width: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0.5em;
+  width: auto;
+}
+
+/* ============================================================
+   11. POPOVER DE FILTRE
+   ============================================================ */
+.jx_filter_popover
+{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9999;
+  width: var(--jx-popover-width);
+  max-height: 520px;
+  display: flex !important;
+  flex-direction: column !important;
+  background: rgba(18, 22, 30, 0.98);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.20);
+  border-radius: 12px;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  margin-top: 10px;
+  overflow: hidden;
+  animation: jx_pop_in 0.2s cubic-bezier(0.2, 0, 0, 1);
+}
+
+@keyframes jx_pop_in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header du popover ── */
+.jx_filter_header
+{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+.jx_filter_header .material-symbols-outlined { font-size: 18px; opacity: 0.5; }
+.jx_filter_title
+{
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Section plage de dates ── */
+.jx_filter_date_range
+{
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 150, 255, 0.04);
+}
+.jx_field { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.jx_field:last-child { margin-bottom: 0; }
+.jx_field label
+{
+  font-size: 0.75rem;
+  min-width: 24px;
+  opacity: 0.5;
+  color: #fff;
+  font-weight: 500;
+}
+.jx_field input[type="date"]
+{
+  flex: 1;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: #fff;
+  font-size: 0.8rem;
+  color-scheme: dark;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.jx_field input[type="date"]:focus
+{
+  border-color: rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
+}
+
+/* ── Barre de recherche interne ── */
+.jx_filter_search { padding: 10px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.jx_filter_search input
+{
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: #fff;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.jx_filter_search input:focus
+{
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+}
+.jx_filter_search input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+/* ── Actions cocher/décocher ── */
+.jx_filter_check_actions
+{
+  display: flex;
+  gap: 12px;
+  padding: 6px 16px 4px;
+}
+.jx_filter_check_actions button
+{
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.jx_filter_check_actions button .material-symbols-outlined { font-size: 18px; }
+.jx_filter_check_actions button:hover { color: rgba(255, 255, 255, 0.9); }
+
+/* ── Liste des valeurs checkbox ── */
+.jx_filter_list
+{
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: auto;
+  max-height: 200px;
+  width: 100%;
+}
+
+/* Scrollbar minimaliste */
+.jx_filter_list::-webkit-scrollbar { width: 4px; }
+.jx_filter_list::-webkit-scrollbar-track { background: transparent; }
+.jx_filter_list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
+.jx_filter_list::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.18); }
+
+.jx_filter_item
+{
+  display: flex !important;
+  position: relative;
+  align-items: center !important;
+  gap: 12px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  width: 100%;
+  box-sizing: border-box;
+  color: rgba(255, 255, 255, 0.65);
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+}
+.jx_filter_item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+
+/* Masquer l'input native */
+.jx_filter_item input[type="checkbox"]
+{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Checkbox custom */
+.jx_filter_item::before
+{
+  content: '';
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* État coché */
+.jx_filter_item:has(input:checked)::before
+{
+  background: #3b82f6;
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.35);
+}
+.jx_filter_item:has(input:checked)
+{
+  color: #fff;
+}
+
+.jx_filter_item:has(input:checked)::after
+{
+  content: 'check';
+  font-family: 'Material Symbols Outlined';
+  position: absolute;
+  left: 18.3px;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 900;
+}
+
+.jx_filter_val { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jx_filter_count
+{
+  font-size: 0.65rem;
+  opacity: 0.35;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.1em;
+  min-width: 18px;
+  text-align: right;
+}
+
+/* ── Boutons granularité date (Jour / Mois / Année) ── */
+.jx_filter_date_granularity
+{
+  display: flex;
+  gap: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.jx_gran_bt
+{
+  flex: 1;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 5px 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.jx_gran_bt:first-child { border-radius: 6px 0 0 6px; }
+.jx_gran_bt:last-child  { border-radius: 0 6px 6px 0; }
+.jx_gran_bt:not(:first-child) { border-left: none; }
+.jx_gran_bt:hover { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.8); }
+.jx_gran_bt.jx_gran_active
+{
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.5);
+  color: #fff;
+}
+
+/* ── Arbre de dates ── */
+.jx_date_tree_node { border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+.jx_date_tree_node:last-child { border-bottom: none; }
+.jx_date_tree_header
+{
+  display: flex;
+  align-items: center;
+}
+.jx_date_tree_header .jx_tree_toggle
+{
+  font-size: 18px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.35);
+  padding: 6px 2px 6px 8px;
+  user-select: none;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.jx_date_tree_header .jx_tree_toggle:hover { color: rgba(255, 255, 255, 0.9); }
+.jx_date_tree_header .jx_filter_item { padding-left: 4px; }
+.jx_date_tree_children { padding-left: 16px; }
+.jx_date_tree_sub .jx_date_tree_children { padding-left: 12px; }
+
+/* État indéterminé */
+.jx_filter_item:has(input:indeterminate)::before
+{
+  background: rgba(59, 130, 246, 0.4);
+  border-color: #3b82f6;
+}
+.jx_filter_item:has(input:indeterminate)::after
+{
+  content: 'remove';
+  font-family: 'Material Symbols Outlined';
+  position: absolute;
+  left: 6.7px;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 900;
+}
+
+/* ── Footer actions ── */
+.jx_filter_actions
+{
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.15);
+  justify-content: flex-end;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.jx_filter_actions button
+{
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 8px 18px;
+  transition: all 0.15s;
+}
+.jx_filter_actions .jx_filter_apply
+{
+  background: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+}
+.jx_filter_actions .jx_filter_apply:hover
+{
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
+}
+.jx_filter_actions .jx_filter_cancel:hover
+{
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* ============================================================
+   12. EMPTY STATE / LOADER
+   ============================================================ */
+.jx_empty_state
+{
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.jx_empty_state span { font-size: 48px; display: block; margin-bottom: 12px; }
+.jx_empty_text { font-size: 0.95rem; }
+
+.jx_table_loader
+{
+  text-align: center;
+  padding: 20px;
+}
+
+/* ============================================================
+   13. ANIMATIONS (structure seulement)
+   ============================================================ */
+.jx_pre_animate
+{
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.jx_row
+{
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ============================================================
+   14. REDIMENSIONNEMENT DES COLONNES
+   ============================================================ */
+.jx_col_resize_handle
+{
+  position: absolute;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+  z-index: 5;
+}
+
+.jx_col_resize_handle::after
+{
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 20%;
+  bottom: 20%;
+  width: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.jx_table_element thead th:hover .jx_col_resize_handle::after,
+.jx_col_resize_handle:hover::after
+{
+  opacity: 0.3;
+}
+
+/* Forcer le cursor col-resize pendant le redimensionnement */
+body.jx_resizing,
+body.jx_resizing * { cursor: col-resize !important; }
+
+/* ============================================================
+   15. DRAG & DROP
+   ============================================================ */
+.jx_dragging { opacity: 0.5; }
+
+/* Ligne indicatrice de position de dépôt */
+.jx_drag_indicator
+{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  pointer-events: none;
+  z-index: 20;
+  display: none;
+  border-radius: 2px;
+}
+
+/* ============================================================
+   16. MASQUAGE DE COLONNES
+   ============================================================ */
+.jx_col_hidden { display: none !important; }
+
+.jx_columns_wrapper
+{
+  position: relative;
+}
+
+.jx_columns_popover
+{
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 9999;
+  width: 220px;
+  border-radius: 10px;
+  padding: 10px 0;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+
+.jx_columns_title
+{
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+  padding: 4px 14px 8px;
+}
+
+.jx_columns_list
+{
+  display: flex;
+  flex-direction: column;
+}
+
+.jx_columns_item
+{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.jx_columns_item input[type="checkbox"]
+{
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+/* ============================================================
+   17. AIDE (popover info)
+   ============================================================ */
+.jx_help_wrapper
+{
+  position: relative;
+}
+
+.jx_help_popover
+{
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 9999;
+  width: 340px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  animation: jx_pop_in 0.15s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Header du popover aide */
+.jx_help_header
+{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.jx_help_header .material-symbols-outlined
+{
+  font-size: 16px;
+  opacity: 0.5;
+}
+
+/* Liste des raccourcis */
+.jx_help_list
+{
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.jx_help_list li
+{
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.jx_help_icon
+{
+  font-size: 17px !important;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.jx_help_label
+{
+  font-weight: 600;
+}
+
+.jx_help_desc
+{
+  font-size: 0.75rem;
+  opacity: 0.45;
+  text-align: right;
+}
+
+/* Mode cartes : le texte peut wrapper (pas d'ellipsis) */
+.jx_mode_cards .jx_cell_val
+{
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* ============================================================
+   18. RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px)
+{
+  .jx_table_wrapper { max-width: 100vw; overflow-x: hidden; }
+  .jx_mode_cards .jx_row { width: 100%; min-width: 100%; }
+  .jx_search_wrapper { max-width: 100%; }
+  .jx_table_controls { flex-wrap: wrap; gap: 8px; }
+  .jx_toolbar_sort_filter { flex-wrap: wrap; }
+  .jx_cell img { max-height: 50px; }
+  .jx_help_popover { width: 260px; }
+}

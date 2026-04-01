@@ -1,0 +1,515 @@
+/**
+ * FICHIER : _modules/JaxX_tables/JaxX_tables_demo.css
+ * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables_demo.css
+ * DESCRIPTION : Design premium dark mode pour la page de démonstration
+ *               du module JaxX_tables. Contient les couleurs, ombres,
+ *               animations et effets visuels.
+ */
+
+/* ============================================================
+   VARIABLES DE COULEUR / THÈME
+   ============================================================ */
+
+*
+{
+  box-sizing:border-box;
+}
+
+:root
+{
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+  --sky-600: #0284c7;
+}
+
+/* ============================================================
+   PAGE DE DÉMO — Layout général
+   ============================================================ */
+html
+{
+  background-color: var(--slate-900);
+  color: var(--slate-50);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.demo_container
+{
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+header
+{
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+}
+
+header h1 { font-weight: 600; margin: 0; color: var(--sky-400); }
+header p { color: var(--slate-300); margin: 10px 0 0 0; }
+.header_flex { display: flex; align-items: baseline; gap: 12px; }
+
+.version_badge
+{
+  background: var(--sky-500);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   SECTIONS DE LA DÉMO
+   ============================================================ */
+.demo_section
+{
+  margin-bottom: 60px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+h2 { margin-top: 0; margin-bottom: 8px; font-size: 1.25rem; font-weight: 600; color: var(--sky-400); }
+
+.section_desc
+{
+  color: var(--slate-300);
+  margin-bottom: 24px;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+code
+{
+  background: var(--slate-800);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--sky-400);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.code_sample
+{
+  background: var(--slate-900);
+  border: 1px solid var(--slate-700);
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+.code_sample pre { margin: 0; }
+.code_sample code { font-family: 'Fira Code', 'Courier New', Courier, monospace; color: var(--sky-400); font-size: 0.9rem; }
+
+.demo_flex { display: flex; gap: 20px; flex-wrap: wrap; }
+.demo_col { flex: 1; min-width: 300px; }
+
+/* ============================================================
+   TABLEAU JaxX — DESIGN PREMIUM
+   ============================================================ */
+
+/* Wrapper */
+.jx_table_wrapper
+{
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+}
+
+/* Contrôles */
+.jx_table_controls { margin-bottom: 8px; }
+
+.jx_search_wrapper
+{
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.jx_search_wrapper span { color: var(--slate-400); font-size: 20px; }
+.jx_search_wrapper input { color: var(--slate-100); }
+.jx_search_wrapper input::placeholder { color: var(--slate-500); }
+
+.jx_bt
+{
+  color: var(--slate-300);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.jx_bt:hover
+{
+  color: var(--sky-400);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Toolbar (mode cartes) */
+.jx_toolbar_label { color: var(--slate-400); }
+
+.jx_toolbar_group
+{
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.jx_toolbar_col_name
+{
+  color: var(--slate-200);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   EN-TÊTE — Header liquidglass
+   ============================================================ */
+.jx_table_element thead
+{
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.9));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: unset;
+}
+
+.jx_table_element thead th
+{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.jx_col_label { color: var(--slate-100); }
+
+/* Boutons de tri */
+.jx_sort_bt
+{
+  color: var(--slate-500);
+  transition: color 0.2s ease;
+}
+
+.jx_sort_bt:hover { color: var(--sky-400); }
+.jx_sort_bt.jx_active { color: var(--sky-400); }
+
+/* Boutons de filtre */
+.jx_filter_col_bt
+{
+  color: var(--slate-500);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.jx_filter_col_bt:hover
+{
+  color: var(--sky-400);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   LIGNES DE DONNÉES
+   ============================================================ */
+.jx_row
+{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--slate-200);
+}
+
+/* Zébrage par classes (pas nth-child → les jx_row_details décalent) */
+.jx_row_even { background: rgba(255, 255, 255, 0.02); }
+.jx_row_odd { background: rgba(255, 255, 255, 0.04); }
+
+/* Hover */
+.jx_mode_table .jx_row:hover
+{
+  background: rgba(56, 189, 248, 0.06);
+  cursor: pointer;
+}
+
+/* Expand button */
+.jx_expand_bt { color: var(--slate-400); }
+.jx_expand_bt:hover { color: var(--sky-400); }
+
+/* Détails dépliables */
+.jx_details_content
+{
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  color: var(--slate-300);
+  font-size: 0.9rem;
+}
+
+/* Copie */
+.jx_copy_btn { color: var(--slate-500); }
+.jx_copy_btn:hover { color: var(--sky-400); }
+.jx_copy_btn.jx_copied { color: #22c55e; }
+
+/* ============================================================
+   MODE CARTES — Design premium
+   ============================================================ */
+.jx_mode_cards .jx_row
+{
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jx_mode_cards .jx_row:hover
+{
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--sky-500);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+}
+
+/* Ligne décorative au hover */
+.jx_mode_cards .jx_row::after
+{
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--sky-500), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.jx_mode_cards .jx_row:hover::after { transform: translateX(100%); }
+
+.jx_mode_cards .jx_cell
+{
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.jx_mode_cards .jx_cell::before { color: var(--slate-400); }
+.jx_mode_cards .jx_cell_actions { border-bottom: none; }
+
+td.jx_cell.jx_cell_actions:before {
+    content: none;
+}
+
+/* ============================================================
+   POPOVER DE FILTRE — Design dark
+   ============================================================ */
+.jx_filter_popover
+{
+  background: var(--slate-800);
+  border: 1px solid var(--slate-700);
+  border-radius: 10px;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+.jx_filter_search input
+{
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--slate-100);
+}
+
+.jx_filter_search input::placeholder { color: var(--slate-500); }
+
+.jx_filter_check_actions button
+{
+  color: var(--sky-400);
+  text-decoration: underline;
+}
+
+.jx_filter_item { color: var(--slate-200); }
+.jx_filter_item:hover { background: rgba(255, 255, 255, 0.04); border-radius: 4px; }
+.jx_filter_count { color: var(--slate-500); }
+
+.jx_filter_title
+{
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  padding: 8px 8px 4px;
+}
+
+.jx_field label { color: var(--slate-400); }
+.jx_field input[type="date"]
+{
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--slate-700);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: var(--slate-100);
+}
+
+.jx_bt_apply
+{
+  background: var(--sky-500) !important;
+  color: white !important;
+  border-radius: 6px !important;
+  font-weight: 600;
+}
+
+.jx_bt_apply:hover { background: var(--sky-600) !important; }
+
+.jx_bt_reset
+{
+  color: var(--slate-400) !important;
+}
+
+.jx_bt_reset:hover { color: var(--slate-200) !important; }
+
+/* ============================================================
+   EMPTY STATE / LOADER
+   ============================================================ */
+.jx_empty_state span { color: var(--slate-500); }
+.jx_empty_text { color: var(--slate-400); }
+
+.jx_table_loader { color: var(--slate-400); }
+
+.jx_spinner
+{
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--slate-700);
+  border-top-color: var(--sky-400);
+  border-radius: 50%;
+  animation: jx_spin 0.5s linear infinite;
+}
+
+@keyframes jx_spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   MASQUAGE DE COLONNES
+   ============================================================ */
+.jx_columns_popover
+{
+  background: var(--slate-800);
+  border: 1px solid var(--slate-700);
+}
+
+.jx_columns_title { color: var(--slate-400); }
+
+.jx_columns_item { color: var(--slate-200); transition: background 0.15s; }
+.jx_columns_item:hover { background: rgba(255,255,255,0.05); }
+
+/* ============================================================
+   AIDE (popover info)
+   ============================================================ */
+.jx_help_popover
+{
+  background: var(--slate-800);
+  border: 1px solid var(--slate-700);
+}
+
+.jx_help_header
+{
+  color: var(--slate-400);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+}
+
+.jx_help_list li
+{
+  color: var(--slate-200);
+  transition: background 0.12s;
+}
+
+.jx_help_list li:hover { background: rgba(255,255,255,0.04); }
+
+.jx_help_icon { color: var(--sky-400); }
+.jx_help_desc {color: var(--lt-color-gray-200);}
+
+/* ============================================================
+   DRAG & DROP
+   ============================================================ */
+.jx_drag_indicator { background: var(--sky-400); box-shadow: 0 0 8px rgba(56, 189, 248, 0.6); }
+
+/* ============================================================
+   DOCUMENTATION TABLE (Section 5)
+   ============================================================ */
+.doc_table_wrapper { overflow-x: auto; }
+.doc_table
+{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.doc_table th, .doc_table td
+{
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+}
+
+.doc_table th { background: rgba(255, 255, 255, 0.05); color: var(--sky-400); font-weight: 600; }
+.doc_table code { color: #f472b6; }
+
+/* ============================================================
+   SCROLLBARS CUSTOM
+   ============================================================ */
+
+/* Standard (Firefox) */
+.jx_table_scroll_container
+{
+  scrollbar-width: thin;
+  scrollbar-color: var(--slate-500) var(--slate-800);
+}
+
+.jx_filter_list
+{
+  scrollbar-width: thin;
+  scrollbar-color: var(--slate-500) transparent;
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+.jx_table_scroll_container::-webkit-scrollbar { width: 8px; height: 8px; }
+.jx_table_scroll_container::-webkit-scrollbar-track { background: var(--slate-800); border-radius: 4px; }
+.jx_table_scroll_container::-webkit-scrollbar-thumb
+{
+  background: var(--slate-500);
+  border-radius: 4px;
+  border: 2px solid var(--slate-800);
+}
+.jx_table_scroll_container::-webkit-scrollbar-thumb:hover { background: var(--sky-500); }
+.jx_table_scroll_container::-webkit-scrollbar-corner { background: var(--slate-800); }
+
+.jx_filter_list::-webkit-scrollbar { width: 6px; }
+.jx_filter_list::-webkit-scrollbar-track { background: transparent; }
+.jx_filter_list::-webkit-scrollbar-thumb { background: var(--slate-500); border-radius: 3px; }
+
+/* ============================================================
+   THEAD STICKY — Fond opaque pour le scroll vertical
+   ============================================================ */
+.jx_table_element thead th
+{
+  background: #00000036;
+  border-right: #0000002b 1px solid;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px)
+{
+  .demo_col { min-width: 100%; }
+}

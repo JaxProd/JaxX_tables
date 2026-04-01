@@ -127,4 +127,8 @@ Le module utilise des variables CSS isolées. Vous pouvez les surcharger dans vo
 
 ---
 
+<<<<<<< HEAD
 Dernière mise à jour : 01/04/2026 — Documentation Technique JaxX_tables.
+=======
+Dernière mise à jour : 01/04/2026 — Documentation Technique JaxX_tables.
+>>>>>>> e7a52c9 ([IA] Mise à jour Documentation README + Stabilisation v2.0-Beta)
