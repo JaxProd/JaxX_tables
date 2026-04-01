@@ -249,11 +249,89 @@ code
 /* Détails dépliables */
 .jx_details_content
 {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
   color: var(--slate-300);
   font-size: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+/* Styles spécifiques pour le contenu riche de la démo */
+.jx_details_content .jx_rich_card
+{
+  padding: 15px;
+}
+
+.jx_details_content .jx_rich_card h4
+{
+  margin: 0 0 10px 0;
+  color: var(--sky-400);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jx_details_content .jx_info_grid
+{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 12px;
+}
+
+.jx_details_content .jx_info_item
+{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jx_details_content .jx_info_label
+{
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--slate-500);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.jx_details_content .jx_status_tag
+{
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.1);
+  color: var(--sky-400);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.jx_details_content .jx_rich_img
+{
+  width: 100%;
+  max-width: 180px;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.jx_details_content .jx_flex_rich
+{
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.jx_rich_card .jx_flex_rich {
+    display: block;
+}
+
+.jx_details_content .jx_flex_main { flex: 2; }
+.jx_details_content .jx_flex_side { flex: 1; min-width: 150px; }
 
 /* Copie */
 .jx_copy_btn { color: var(--slate-500); }

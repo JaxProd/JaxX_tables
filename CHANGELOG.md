@@ -4,6 +4,7 @@ Toutes les modifications notables de ce projet seront documentées dans ce fichi
 
 ## [Unreleased] - 2026-04-01 04:10
 ### 🚀 UX & Fonctionnalités Premium
+- 01/04/2026 04:40 : [IA] Démo Section 4 : Enrichissement de la ligne "Architecture" (fiche technique riche + image secondaire intégrée).
 - 01/04/2026 04:15 : [IA] Copie de ligne "Auto-contenue" (`copyRow`) : les images sont désormais physiquement embarquées (Base64) dans le format HTML pour un collage parfait dans Excel/Word sans dépendance URL.
 - 01/04/2026 04:10 : [IA] Copie d'image intelligente (`copyCell`) : les cellules `jx_col_visuel` copient désormais l'image physique (Blob PNG via Canvas).
 - 01/04/2026 04:00 : [IA] Rafraîchissement de la Section 4 avec de nouvelles données (Cyberpunk, Cinéma, Art).

@@ -153,7 +153,36 @@ $array_cards = [
 			'univers'   => 'Architecture',
 			'titre'     => 'Glass Horizon',
 			'vibe'      => 'Minimaliste',
-			'jx_expand_content' => 'Lignes pures et reflets cristallins. Ce visuel architectural met en avant la précision des bordures du module JaxX_tables.'
+			'jx_expand_content' => '
+				<div class=\'jx_rich_card\'>
+					<div class=\'jx_flex_rich\'>
+						<div class=\'jx_flex_main\'>
+							<h4>🏢 Fiche Technique : Glass Horizon</h4>
+							<p>Exploration des structures modernes et du jeu de reflets sur verre trempé en milieu urbain dense. Un rendu exceptionnel pour les dashboards immobiliers.</p>
+							<div class=\'jx_info_grid\'>
+								<div class=\'jx_info_item\'>
+									<span class=\'jx_info_label\'>Localisation</span>
+									<span>Manhattan District</span>
+								</div>
+								<div class=\'jx_info_item\'>
+									<span class=\'jx_info_label\'>Statut</span>
+									<span class=\'jx_status_tag\'>VÉRIFIÉ</span>
+								</div>
+								<div class=\'jx_info_item\'>
+									<span class=\'jx_info_label\'>Résolution</span>
+									<span>4K Native</span>
+								</div>
+								<div class=\'jx_info_item\'>
+									<span class=\'jx_info_label\'>Poids Fichier</span>
+									<span>12.4 MB</span>
+								</div>
+							</div>
+						</div>
+						<div class=\'jx_flex_side\'>
+							<img src=\'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop\' class=\'jx_rich_img\' alt=\'Architecture Detail\'>
+						</div>
+					</div>
+				</div>'
 		],
 		[
 			'visuel'    => '<img src=\'https://images.unsplash.com/photo-1514565131-fce0801e5785?w=400&h=260&fit=crop\' alt=\'Sci-Fi\'>',
