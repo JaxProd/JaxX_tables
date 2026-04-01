@@ -24,7 +24,7 @@
 * **Interactivité** : Drag & Drop des colonnes, redimensionnement manuel et Auto-fit (double-clic).
 * **Données** : Supporte le mode statique (Array PHP) et le mode AJAX (Infinite Scroll).
 * **ClipBoard** : Copie de données dans le presse-papier : donnée individuelle ou ligne sous forme tableur.
-* **Filtres & Tri** : Recherche globale (debounce 300ms), filtres par cases à cocher et plages de dates.
+* **Filtres & Tri** : Recherche globale (debounce 300ms), filtres par cases à cocher et plages de dates. En mode AJAX, tri/filtres/recherche s'exécutent **côté serveur** sur l'ensemble des données.
 * **Persistance** : Sauvegarde auto dans le `localStorage` (ordre, largeur, colonnes masquées).
 * **Export & Copie** : Export CSV et API de copie dans le presse-papier intégrée.
 
@@ -87,14 +87,37 @@ echo return_JaxX_table([
 ```
 
 Côté Handler (`mon_handler_ajax.php`) :
-Le serveur doit retourner uniquement le HTML des lignes via `return_JaxX_lines()`.
+Le serveur reçoit les paramètres de tri, filtres et recherche. Il doit appliquer ces critères sur l'ensemble des données et retourner la page demandée via `return_JaxX_lines()`.
 
 ```php
-$page = intval($_POST['page'] ?? 1);
-$query = $_POST['query'] ?? ''; // Terme de recherche globale
+$page     = intval($_POST['page'] ?? 1);
+$query    = trim($_POST['query'] ?? '');      // Recherche globale
+$sort_col = trim($_POST['sort_col'] ?? '');    // Colonne de tri
+$sort_dir = trim($_POST['sort_dir'] ?? '');    // "asc" ou "desc"
+$filters  = json_decode($_POST['filters'] ?? '{}', true) ?: [];
+$action   = trim($_POST['action'] ?? '');
+$per_page = 20;
 
-// 1. Récupération SQL (exemple)
-// $rows = $db->query("... LIMIT 20 OFFSET " . ($page - 1) * 20);
+// 1. Appliquer recherche globale ($query) sur toutes les colonnes
+// 2. Appliquer filtres par colonne ($filters)
+//    - checked: array de valeurs cochées
+//    - dateFrom / dateTo: plage de dates
+// 3. Appliquer tri ($sort_col + $sort_dir)
+
+// ── Action spéciale : valeurs distinctes pour popover filtre ──
+if ($action === 'filter_values')
+{
+    $filter_col = trim($_POST['filter_col'] ?? '');
+    // Compter les occurrences distinctes dans les données filtrées
+    // Pour les dates : regrouper par jour (Y-m-d)
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($valueCounts, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ── Rendu paginé ──
+$offset = ($page - 1) * $per_page;
+// $rows = SELECT ... WHERE (filtres) ORDER BY $sort_col $sort_dir LIMIT $per_page OFFSET $offset
 
 if (empty($rows)) {
     echo ''; // Stop le scroll JS
@@ -102,8 +125,8 @@ if (empty($rows)) {
 }
 
 echo return_JaxX_lines([
-    'data'    => $rows,
-    'columns' => [ /* Structure de colonnes */ ],
+    'data'       => $rows,
+    'columns'    => [ /* Structure de colonnes */ ],
     'expandable' => true
 ]);
 ```
@@ -146,4 +169,4 @@ Le dataset de démonstration a été rafraîchi avec des visuels HD thématiques
 
 ---
 
-Dernière mise à jour : 01/04/2026 04:30 — Documentation Technique JaxX_tables v2.0.0-Beta par IA.
+Dernière mise à jour : 01/04/2026 — Documentation Technique JaxX_tables v2.0.0-Beta par IA.

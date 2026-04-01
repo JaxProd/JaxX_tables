@@ -59,15 +59,37 @@
 	// Incrémenter ici après tout changement structurel pour invalider les anciens états.
 	var JX_STATE_VERSION = "5";
 
+	// Registre global pour permettre le pilotage externe des instances
+	window.JaxX_table_instances = window.JaxX_table_instances || {};
+
 	// ================================================================
 	// [CTRL+D] [CONSTRUCTOR]
 	// ================================================================
 	function JaxX_table(table_id)
 	{
+		// Si une instance existe déjà pour cet ID
+		if (window.JaxX_table_instances[table_id])
+		{
+			var inst = window.JaxX_table_instances[table_id];
+			// Si l'élément wrapper dans le DOM a changé (cas du remplacement de Shell AJAX)
+			// On met à jour les références et on ré-attache les événements
+			if (inst.wrapper[0] !== $("#" + table_id)[0])
+			{
+				inst.wrapper = $("#" + table_id);
+				inst.body    = inst.wrapper.find(".jx_table_body");
+				inst.ajaxUrl = inst.wrapper.data("ajax-url") || "";
+				inst.init(); // Ré-initialise (bindEvents etc) sur le nouveau DOM
+			}
+			return inst;
+		}
+
 		this.tableId  = table_id;
 		this.wrapper  = $("#" + table_id);
 		this.body     = this.wrapper.find(".jx_table_body");
 		this.ajaxUrl  = this.wrapper.data("ajax-url") || "";
+
+		// Enregistrement de l'instance
+		window.JaxX_table_instances[table_id] = this;
 
 		this.init();
 	}
@@ -480,19 +502,62 @@
 			var checkedValues = currentFilter.checked || [];
 			var isDate = (colType === "date");
 
-			// Collecter les valeurs uniques + comptage
+			// En mode AJAX, récupérer les valeurs distinctes depuis le serveur
+			if (this.ajaxUrl)
+			{
+				$.ajax({
+					url:    this.ajaxUrl,
+					method: "POST",
+					data:   {
+						table_id:      this.tableId,
+						action:        "filter_values",
+						filter_col:    colId,
+						filter_type:   colType,
+						query:         this.searchQuery,
+						sort_col:      this.sortCol  || "",
+						sort_dir:      this.sortDir  || "",
+						filters:       JSON.stringify(this.filters)
+					},
+					dataType: "json",
+					success: function(valueCounts)
+					{
+						self._buildFilterPopover(colId, colType, btn, valueCounts || {}, currentFilter, checkedValues, isDate);
+					},
+					error: function()
+					{
+						// Fallback : valeurs depuis le DOM
+						var vc = {};
+						self.body.find(".jx_col_" + colId + " .jx_cell_val").each(function()
+						{
+							var val = $(this).text().trim();
+							if (val) vc[val] = (vc[val] || 0) + 1;
+						});
+						self._buildFilterPopover(colId, colType, btn, vc, currentFilter, checkedValues, isDate);
+					}
+				});
+				return;
+			}
+
+			// Mode statique : valeurs depuis le DOM
 			var valueCounts = {};
 			this.body.find(".jx_col_" + colId + " .jx_cell_val").each(function()
 			{
 				var val = $(this).text().trim();
 				if (val) valueCounts[val] = (valueCounts[val] || 0) + 1;
 			});
+
+			this._buildFilterPopover(colId, colType, btn, valueCounts, currentFilter, checkedValues, isDate);
+		},
+
+		_buildFilterPopover: function(colId, colType, btn, valueCounts, currentFilter, checkedValues, isDate)
+		{
+			var self = this;
 			var values = Object.keys(valueCounts).sort();
 
-			var popover = $("<div class='jx_filter_popover'></div>").attr("data-col-id", colId);
+			var popover = $("<div class='jx_filter_popover jx_popover '></div>").attr("data-col-id", colId);
 
 			// ── Titre du popover ──
-			var colLabel = self.wrapper.find("th[data-col-id='" + colId + "'] .jx_col_label").text() || colId;
+			var colLabel = self.wrapper.find("th[data-col-id='" + colId + "'] .jx_col_label").contents().filter(function() { return this.nodeType === 3; }).text().trim() || colId;
 			popover.append("<div class='jx_filter_header'><span class='material-symbols-outlined'>filter_list</span><span class='jx_filter_title'>" + colLabel + "</span></div>");
 
 			// ── Section plage de dates (si colonne date) ──
@@ -529,13 +594,14 @@
 			{
 				var monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
 
-				// Parser toutes les dates
+				// Parser toutes les dates (tri du plus récent au plus ancien)
 				var parsedDates = [];
 				$.each(values, function(i, val)
 				{
 					var d = self.parseDate(val);
 					if (d) parsedDates.push({ raw: val, date: d, count: valueCounts[val] || 0 });
 				});
+				parsedDates.sort(function(a, b) { return b.date - a.date; });
 
 				// Granularité par défaut (configurable via data-date-granularity sur le <th>)
 				var thGran = self.wrapper.find("th[data-col-id='" + colId + "']").data("date-granularity");
@@ -584,7 +650,7 @@
 				function buildDateTree(granularity)
 				{
 					list.empty();
-					var years = Object.keys(tree).sort();
+					var years = Object.keys(tree).sort().reverse();
 
 					if (granularity === "day")
 					{
@@ -613,7 +679,7 @@
 							$yearBlock.append($yearHeader);
 
 							var $yearChildren = $("<div class='jx_date_tree_children' style='display:none;'></div>");
-							var months = Object.keys(tree[year]).sort(function(a, b) { return a - b; });
+							var months = Object.keys(tree[year]).sort(function(a, b) { return b - a; });
 
 							$.each(months, function(mi, month)
 							{
@@ -642,7 +708,7 @@
 						else if (granularity === "month")
 						{
 							// Mois → Jours (collapsible)
-							var months = Object.keys(tree[year]).sort(function(a, b) { return a - b; });
+							var months = Object.keys(tree[year]).sort(function(a, b) { return b - a; });
 							$.each(months, function(mi, month)
 							{
 								var days = tree[year][month];
@@ -1291,7 +1357,7 @@
 			var existing = $wrapper.find(".jx_columns_popover");
 			if (existing.length) { existing.remove(); return; }
 
-			var $pop = $("<div class='jx_columns_popover'>");
+			var $pop = $("<div class='jx_columns_popover jx_popover'>");
 			var $title = $("<div class='jx_columns_title'>Colonnes visibles</div>");
 			var $list  = $("<div class='jx_columns_list'>");
 
@@ -1326,6 +1392,18 @@
 		},
 
 		// ============================================================
+		// [CTRL+D] [AJAXRELOAD]
+		// ============================================================
+		reloadFromServer: function()
+		{
+			this.page      = 1;
+			this.endOfData = false;
+			this.noMoreDataCooldown = false;
+			this.body.find(".jx_row_end_message").remove();
+			this.loadLines(false);
+		},
+
+		// ============================================================
 		// [CTRL+D] [SORT]
 		// ============================================================
 		applySort: function(colId, dir, btn)
@@ -1334,7 +1412,9 @@
 			btn.addClass("jx_active");
 			this.sortCol = colId;
 			this.sortDir = dir;
-			this.refresh();
+
+			if (this.ajaxUrl) this.reloadFromServer();
+			else this.refresh();
 		},
 
 		// ============================================================
@@ -1342,6 +1422,9 @@
 		// ============================================================
 		refresh: function()
 		{
+			// En mode AJAX, déléguer tri/filtre/recherche au serveur
+			if (this.ajaxUrl) { this.reloadFromServer(); return; }
+
 			var self = this;
 			var rows = this.body.find(".jx_row");
 
@@ -1745,7 +1828,14 @@
 			$.ajax({
 				url: this.ajaxUrl,
 				method: "POST",
-				data: { table_id: this.tableId, page: this.page, query: this.searchQuery },
+				data: {
+					table_id:  this.tableId,
+					page:      this.page,
+					query:     this.searchQuery,
+					sort_col:  this.sortCol  || "",
+					sort_dir:  this.sortDir  || "",
+					filters:   JSON.stringify(this.filters)
+				},
 				success: function(html)
 				{
 					self.wrapper.find(".jx_table_loader").stop(true, true).hide();

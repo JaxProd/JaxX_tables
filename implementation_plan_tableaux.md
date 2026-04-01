@@ -113,12 +113,12 @@ echo return_JaxX_table($array_table);
 | Fonctionnalité | Statut | Notes |
 |---|---|---|
 | Multi-instances (plusieurs tableaux par page) | ✅ | Pattern prototype JS, scope par `table_id` |
-| Chargement AJAX + infinite scroll | ✅ | POST `{table_id, page, query}` |
+| Chargement AJAX + infinite scroll | ✅ | POST `{table_id, page, query, sort_col, sort_dir, filters}` |
 | Données statiques PHP (sans AJAX) | ✅ | Clé `data` dans `$array_table` |
-| Tri par colonne ASC/DESC | ✅ | Côté client (statique) ou serveur (AJAX) |
-| Filtre par colonne — liste checkbox | ✅ | Valeurs uniques extraites du DOM |
-| Filtre par colonne — plage de dates | ✅ | Colonnes avec `type => 'date'` |
-| Moteur de recherche global | ✅ | Debounce 300ms, filtre client-side |
+| Tri par colonne ASC/DESC | ✅ | Côté client (statique) **et serveur (AJAX)** |
+| Filtre par colonne — liste checkbox | ✅ | Statique : DOM — AJAX : valeurs distinctes via requête serveur |
+| Filtre par colonne — plage de dates | ✅ | Colonnes avec `type => 'date'`, regroupement par jour minimum |
+| Moteur de recherche global | ✅ | Debounce 300ms — statique : filtre DOM — AJAX : requête serveur |
 | Lignes déployables (expand) | ✅ | `jx_expand_content` + slide animation |
 | Mode tableau / mode cartes | ✅ | Toggle, labels affichés dans la carte |
 | Bascule responsive automatique | ✅ | Option `responsive`, breakpoint 768px |
@@ -169,12 +169,14 @@ JaxX_table.prototype = {
     saveState(),
     loadState(),
     applySort(colId, dir),
-    refresh(),              // Filtre/tri côté client
+    refresh(),              // Filtre/tri côté client (statique) — délègue au serveur en AJAX
+    reloadFromServer(),     // Reset pagination + rechargement AJAX (tri/filtre/recherche serveur)
+    _buildFilterPopover(),  // Construction du popover filtre (valeurs DOM ou AJAX)
     toggleMode(),           // Table ↔ cartes
     injectCardInfoButtons(),
     revealLines(),          // Animation stagger
     exportCsv(),
-    loadLines(append),      // Chargement AJAX
+    loadLines(append),      // Chargement AJAX (envoie sort_col, sort_dir, filters, query)
 };
 
 // Auto-init au chargement DOM
@@ -197,13 +199,14 @@ $(".jx_table_wrapper[id]").each(function() {
 | `[RESPONSIVE]` | Bascule auto sur resize fenêtre |
 | `[COLUMNS]` | Masquage/affichage colonnes + picker |
 | `[STORAGE]` | saveState / loadState localStorage |
-| `[SORT]` | Tri par colonne |
-| `[CLIENTFILTER]` | Filtre/tri côté client (données statiques) |
+| `[AJAXRELOAD]` | reloadFromServer — reset pagination + rechargement serveur |
+| `[SORT]` | Tri par colonne (client ou serveur selon mode) |
+| `[CLIENTFILTER]` | Filtre/tri côté client (données statiques) — délègue en AJAX |
 | `[TOGGLE]` | Bascule mode table/cartes |
 | `[REVEAL]` | Animation d'apparition des lignes |
 | `[CSV]` | Export CSV |
 | `[COPY]` | Copie clipboard |
-| `[AJAX]` | loadLines — infinite scroll |
+| `[AJAX]` | loadLines — infinite scroll + envoi sort/filter/query |
 | `[AUTOINIT]` | Initialisation automatique |
 
 ---
@@ -233,25 +236,77 @@ Clé : `jx_table_state_{table_id}`
 
 ```
 POST ajax_url
-{ table_id: "mon_tableau", page: 1, query: "" }
+{
+    table_id:  "mon_tableau",
+    page:      1,
+    query:     "",
+    sort_col:  "nom",           // Colonne de tri (vide si aucun tri)
+    sort_dir:  "asc",           // "asc" ou "desc" (vide si aucun tri)
+    filters:   "{...}"          // JSON stringifié des filtres actifs
+}
 ```
 
 - `page` : incrémenté automatiquement après chaque chargement
 - `query` : valeur du moteur de recherche global
+- `sort_col` / `sort_dir` : tri côté serveur — appliqué sur l'ensemble des données
+- `filters` : objet JSON sérialisé — chaque clé = `colId`, valeur = `{ checked: [...], dateFrom, dateTo, granularity }`
 - Réponse vide `""` → fin du scroll (message "— Fin du tableau —")
 
-### 8.2 Handler PHP minimal
+**Rechargement automatique** : quand l'utilisateur change le tri, un filtre ou la recherche, le JS reset la pagination (`page = 1`) et recharge depuis le serveur via `reloadFromServer()`.
+
+### 8.2 Requête de valeurs filtre distinctes
+
+Quand l'utilisateur ouvre un popover filtre en mode AJAX, le JS envoie une requête spéciale pour obtenir les valeurs distinctes de la colonne sur l'ensemble des données (filtrées par les autres filtres/recherche actifs) :
+
+```
+POST ajax_url
+{
+    table_id:    "mon_tableau",
+    action:      "filter_values",
+    filter_col:  "ville",
+    filter_type: "text",        // ou "date"
+    query:       "",
+    sort_col:    "",
+    sort_dir:    "",
+    filters:     "{...}"
+}
+```
+
+**Réponse attendue** : JSON `{ "Paris": 12, "Lyon": 8, "Marseille": 5 }` (valeur → nombre d'occurrences).
+Pour les colonnes `date`, les valeurs sont regroupées par jour minimum (`YYYY-MM-DD`).
+
+### 8.3 Handler PHP minimal
 
 ```php
 <?php
 require_once 'JaxX_tables.php'; // ou via cfg.php + autoloader
 
 $page     = intval($_POST['page'] ?? 1);
+$query    = trim($_POST['query'] ?? '');
+$sort_col = trim($_POST['sort_col'] ?? '');
+$sort_dir = trim($_POST['sort_dir'] ?? '');
+$filters  = json_decode($_POST['filters'] ?? '{}', true) ?: [];
+$action   = trim($_POST['action'] ?? '');
 $per_page = 20;
-$offset   = ($page - 1) * $per_page;
 
-// ... requête BDD ...
-$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// ... appliquer $query (recherche) et $filters sur les données ...
+// ... appliquer $sort_col / $sort_dir ...
+
+// ── Valeurs distinctes pour popover filtre ──
+if ($action === 'filter_values')
+{
+    $filter_col  = trim($_POST['filter_col'] ?? '');
+    $filter_type = trim($_POST['filter_type'] ?? '');
+    // Compter les occurrences distinctes de $filter_col dans les données filtrées
+    // Pour type "date", regrouper par jour : date('Y-m-d', strtotime($val))
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($valueCounts, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// ── Rendu paginé des lignes ──
+$offset = ($page - 1) * $per_page;
+$rows = array_slice($data, $offset, $per_page); // ou LIMIT/OFFSET en SQL
 
 if (empty($rows)) { echo ''; exit; }
 

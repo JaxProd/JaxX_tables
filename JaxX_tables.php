@@ -42,6 +42,8 @@
 // 1. [RENDER] Point d'entrée principal
 // [CTRL+D] [RENDER]
 
+// $header_script[]='<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet">';
+$header_scripts[]='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">';
 
 function return_JaxX_table($array_table)
 {
@@ -302,7 +304,7 @@ function return_JaxX_controls($array_table)
 			<button class='jx_bt jx_bt_help' title='Aide'>
 				<span class='material-symbols-outlined'>help_outline</span>
 			</button>
-			<div class='jx_help_popover' style='display:none;'></div>
+			<div class='jx_help_popover jx_popover' style='display:none;'></div>
 		</div>
 	</div>";
 	

@@ -212,6 +212,17 @@
 
 .jx_col_expand_header { width: 40px; }
 
+.jx_table_element thead
+{
+  /* background-image: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.9)); */
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: unset;
+  background-color: #0000008a;
+}
 /* ============================================================
    7. LIGNES DE DONNÉES (tbody)
    ============================================================ */
@@ -882,8 +893,7 @@ body.jx_resizing * { cursor: col-resize !important; }
   z-index: 20;
   display: none;
   border-radius: 2px;
-}
-
+  background: rgba(56, 191, 248, 0.233); box-shadow: 0 0 8px rgba(56, 189, 248, 0.6); }
 /* ============================================================
    16. MASQUAGE DE COLONNES
    ============================================================ */
@@ -950,7 +960,7 @@ body.jx_resizing * { cursor: col-resize !important; }
   position: relative;
 }
 
-.jx_help_popover
+.jx_help_popover,.jx_popover
 {
   position: absolute;
   top: calc(100% + 8px);
@@ -961,6 +971,9 @@ body.jx_resizing * { cursor: col-resize !important; }
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   animation: jx_pop_in 0.15s cubic-bezier(0.2, 0, 0, 1);
+  background-color: #111728e0;
+  backdrop-filter: blur(9px);
+  border: var(--scrollbar-thumb-hover) 1px solid;
 }
 
 /* Header du popover aide */

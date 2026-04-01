@@ -2,6 +2,16 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [Unreleased] - 2026-04-01
+### 🔧 Tri, filtres et recherche côté serveur (AJAX)
+- 01/04/2026 : [IA] Tri/filtres/recherche délégués au serveur en mode AJAX — opèrent sur l'ensemble des données, pas seulement les lignes chargées.
+- 01/04/2026 : [IA] `loadLines()` envoie désormais `sort_col`, `sort_dir`, `filters` (JSON) et `query` au handler AJAX.
+- 01/04/2026 : [IA] Nouvelle méthode `reloadFromServer()` : reset pagination + rechargement complet lors d'un changement de tri/filtre/recherche.
+- 01/04/2026 : [IA] Popover filtre en mode AJAX : les valeurs distinctes sont récupérées depuis le serveur (action `filter_values`) au lieu du DOM.
+- 01/04/2026 : [IA] Refactor `handleFilterClick()` → extraction `_buildFilterPopover()` pour support AJAX/statique.
+- 01/04/2026 : [IA] Handler demo (`JaxX_tables_demo_ajax.php`) : ajout tri, filtres checkbox, plage de dates, recherche et valeurs distinctes côté serveur.
+- 01/04/2026 : [IA] Dates : regroupement par jour minimum dans les valeurs filtre serveur.
+
 ## [Unreleased] - 2026-04-01 04:10
 ### 🚀 UX & Fonctionnalités Premium
 - 01/04/2026 04:40 : [IA] Démo Section 4 : Enrichissement de la ligne "Architecture" (fiche technique riche + image secondaire intégrée).
