@@ -2,6 +2,12 @@
 
 Toutes les modifications notables de ce projet seront documentées dans ce fichier.
 
+## [Unreleased] - 2026-04-01 03:36
+### ⚖️ Licence & Crédits
+- 01/04/2026 03:36 : [IA] Ajout de la licence **CC BY-NC-SA 4.0** (Non-lucrative).
+- 01/04/2026 03:36 : [IA] Insertion des filigranes techniques (headers) avec liens vers **AnunaQi.com** et GitHub dans tous les fichiers sources.
+- 01/04/2026 03:36 : [IA] Création des fichiers `LICENSE` et `.gitignore`.
+
 ## [Unreleased] - 2026-04-01 03:20
 ### 📝 Documentation
 - 01/04/2026 03:20 : [IA] Nettoyage et correction de la mise en forme Markdown du `README.md` (blocs de code, alertes, espacement).

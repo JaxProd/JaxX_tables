@@ -5,10 +5,16 @@
 ---
 
 ### ⚖️ Licence & Crédits
-**Utilisation autorisée.**
+**JaxX_tables** est distribué sous la licence **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)**.
 
 > [!IMPORTANT]
+> **Utilisation autorisée pour projets non-commerciaux.**
 > Vous devez impérativement conserver le nom de l'auteur original **JaxX - AnunaQi.com** dans le code source (fichiers PHP, JS et CSS).
+> Interdiction de vente ou d'utilisation lucrative sans accord préalable.
+
+**Liens utiles :**
+*   **Site Web** : [AnunaQi.com](https://anunaqi.com)
+*   **Dépôt GitHub** : [JaxX_tables](https://github.com/JaxProd/JaxX_tables)
 
 ---
 

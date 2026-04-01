@@ -1,15 +1,20 @@
 <?php
 /**
+ * JaxX_tables - Moteur de rendu de tableaux PHP/JS multi-instances
+ * 
+ * @version   2.0.0-Beta
+ * @author    JaxX - AnunaQi.com
+ * @link      https://anunaqi.com
+ * @link      https://github.com/JaxProd/JaxX_tables
+ * @license   CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0)
+ * 
+ * Utilisation autorisée pour projets non-commerciaux. 
+ * Interdiction de vente ou d'utilisation lucrative sans accord préalable.
  * ================================================================
  * FICHIER : JaxX_tables.php
  * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.php
  * SHORT_DESC : Moteur de rendu de tableaux multi-instances (JaxX V2).
- * DESCRIPTION : Module <b>SaaS-ready</b> permettant d'afficher des données tabulaires dynamiques. <br><br>
- * <ul style="margin: 5px 0 0 20px;">
- *   <li>Supporte le mode <strong>Tableau</strong> et le mode <strong>Cartes</strong> pour le responsive.</li>
- *   <li>Entièrement sculpté <code style="color:#06b6d4">jx_</code> pour éviter les conflits CSS.</li>
- *   <li><span style="color:#10b981">Compatible infinite scroll AJAX.</span></li>
- * </ul>
+ * DESCRIPTION : Module SaaS-ready permettant d'afficher des données tabulaires dynamiques.
  *
  * SOMMAIRE : [CTRL+D]
  *   - [RENDER]   : Point d'entrée principal (return_JaxX_table)

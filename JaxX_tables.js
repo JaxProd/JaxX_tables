@@ -1,4 +1,14 @@
 /**
+ * JaxX_tables - Moteur de rendu de tableaux PHP/JS multi-instances
+ * 
+ * @version   2.0.0-Beta
+ * @author    JaxX - AnunaQi.com
+ * @link      https://anunaqi.com
+ * @link      https://github.com/JaxProd/JaxX_tables
+ * @license   CC BY-NC-SA 4.0 (Creative Commons Attribution-NonCommercial-ShareAlike 4.0)
+ * 
+ * Utilisation autorisée pour projets non-commerciaux. 
+ * Interdiction de vente ou d'utilisation lucrative sans accord préalable.
  * ================================================================
  * FICHIER : JaxX_tables.js
  * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.js

@@ -1,11 +1,19 @@
 /**
+ * JaxX_tables - Moteur de rendu de tableaux PHP/JS multi-instances
+ * 
+ * @version   2.0.0-Beta
+ * @author    JaxX - AnunaQi.com
+ * @link      https://anunaqi.com
+ * @link      https://github.com/JaxProd/JaxX_tables
+ * @license   CC BY-NC-SA 4.0
+ * 
+ * Utilisation autorisée pour projets non-commerciaux. 
  * ================================================================
  * FICHIER : JaxX_tables.css
  * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.css
  * SHORT_DESC : CSS structurel du module JaxX_tables.
  * DESCRIPTION : Contient UNIQUEMENT le layout, les dimensions, les resets
  *               et la structure. Aucune couleur, ombre ou animation.
- *               Le design visuel doit être défini dans le CSS de destination.
  *
  * MODIFICATIONS :
  *   - 31/03/2026 17:00 : [IA] Section 14 — poignée de redimensionnement des colonnes.
