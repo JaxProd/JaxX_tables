@@ -43,7 +43,7 @@
 // [CTRL+D] [RENDER]
 
 // $header_script[]='<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet">';
-$header_scripts[]='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">';
+// $header_script[]='<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">';
 
 function return_JaxX_table($array_table)
 {
@@ -196,7 +196,12 @@ function return_JaxX_lines($array_table)
 			$pre_animate = ($array_table["animated"] ?? true) ? "jx_pre_animate" : "";
 			$zebra = ($row_index % 2 === 0) ? "jx_row_even" : "jx_row_odd";
 
-			$html .= "<tr class='jx_row " . $zebra . " " . $pre_animate . "' data-row-id='" . $row_id . "'>";
+			if(isset($row["injected_classes"]) && is_array($row["injected_classes"]))
+			{
+				$injected_classes = implode(" ", $row["injected_classes"]);
+			} else{$injected_classes ='';}
+
+			$html .= "<tr class='jx_row " . $zebra . " " . $pre_animate . " " . $injected_classes . "' data-row-id='" . $row_id . "'>";
 
 			// Trigger Expansion — seulement si la colonne expand existe ET la ligne a du contenu
 			if ($has_expand)

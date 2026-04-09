@@ -7,8 +7,9 @@
  */
 
 /* ============================================================
-   VARIABLES DE COULEUR / THÈME
+   VARIABLES DE COULEUR / THÃˆME
    ============================================================ */
+@charset "UTF-8";
 
 *
 {
@@ -32,7 +33,7 @@
 }
 
 /* ============================================================
-   PAGE DE DÉMO — Layout général
+   PAGE DE DéMO â€” Layout général
    ============================================================ */
 html
 {
@@ -72,7 +73,7 @@ header p { color: var(--slate-300); margin: 10px 0 0 0; }
 }
 
 /* ============================================================
-   SECTIONS DE LA DÉMO
+   SECTIONS DE LA DéMO
    ============================================================ */
 .demo_section
 {
@@ -120,7 +121,7 @@ code
 .demo_col { flex: 1; min-width: 300px; }
 
 /* ============================================================
-   TABLEAU JaxX — DESIGN PREMIUM
+   TABLEAU JaxX â€” DESIGN PREMIUM
    ============================================================ */
 
 /* Wrapper */
@@ -132,7 +133,7 @@ code
   padding: 16px;
 }
 
-/* Contrôles */
+/* ContrÃ´les */
 .jx_table_controls { margin-bottom: 8px; }
 
 .jx_search_wrapper
@@ -178,7 +179,7 @@ code
 }
 
 /* ============================================================
-   EN-TÊTE — Header liquidglass
+   EN-TÃŠTE â€” Header liquidglass
    ============================================================ */
 .jx_table_element thead
 {
@@ -223,7 +224,7 @@ code
 }
 
 /* ============================================================
-   LIGNES DE DONNÉES
+   LIGNES DE DONNéES
    ============================================================ */
 .jx_row
 {
@@ -231,7 +232,15 @@ code
   color: var(--slate-200);
 }
 
-/* Zébrage par classes (pas nth-child → les jx_row_details décalent) */
+tr.jx_row.rouge {
+    background-color: #ff000040;
+}
+
+tr.jx_row.faded {
+    opacity: .5;
+}
+
+/* Zébrage par classes (pas nth-child â†’ les jx_row_details décalent) */
 .jx_row_even { background: rgba(255, 255, 255, 0.02); }
 .jx_row_odd { background: rgba(255, 255, 255, 0.04); }
 
@@ -339,7 +348,7 @@ code
 .jx_copy_btn.jx_copied { color: #22c55e; }
 
 /* ============================================================
-   MODE CARTES — Design premium
+   MODE CARTES â€” Design premium
    ============================================================ */
 .jx_mode_cards .jx_row
 {
@@ -384,7 +393,7 @@ td.jx_cell.jx_cell_actions:before {
 }
 
 /* ============================================================
-   POPOVER DE FILTRE — Design dark
+   POPOVER DE FILTRE â€” Design dark
    ============================================================ */
 .jx_filter_popover
 {
@@ -576,7 +585,7 @@ td.jx_cell.jx_cell_actions:before {
 .jx_filter_list::-webkit-scrollbar-thumb { background: var(--slate-500); border-radius: 3px; }
 
 /* ============================================================
-   THEAD STICKY — Fond opaque pour le scroll vertical
+   THEAD STICKY â€” Fond opaque pour le scroll vertical
    ============================================================ */
 .jx_table_element thead th
 {

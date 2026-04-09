@@ -1493,6 +1493,9 @@
 					if ($details.length) self.body.append($details);
 				});
 			}
+
+			this.revealLines();
+			this.applyMarking();
 		},
 
 		// ============================================================
@@ -1810,6 +1813,29 @@
 		},
 
 		// ============================================================
+		// [CTRL+D] [MARKING]
+		// Surlignage des termes de recherche (nécessite mark.js)
+		// ============================================================
+		applyMarking: function()
+		{
+			if (typeof this.body.mark === "function") 
+			{
+				this.body.unmark();
+				var q = (this.searchQuery || "").trim();
+				if (q.length >= 2) 
+				{
+					this.body.mark(q, {
+						"element": "mark",
+						"className": "jx_mark",
+						"separateWordSearch": true,
+						"accuracy": "partially",
+						"diacritics": true
+					});
+				}
+			}
+		},
+
+		// ============================================================
 		// [CTRL+D] [AJAX]
 		// ============================================================
 		loadLines: function(append)
@@ -1882,6 +1908,7 @@
 
 					if (self.wrapper.hasClass("jx_mode_cards")) self.injectCardInfoButtons();
 					self.revealLines();
+					self.applyMarking();
 				},
 				error: function()
 				{
@@ -1894,13 +1921,50 @@
 
 	// ================================================================
 	// [CTRL+D] [AUTOINIT]
+	// Initialisation automatique au chargement + détection dynamique (AJAX/SPA)
 	// ================================================================
 	$(function()
 	{
+		/* 1. Tableaux déjà présents dans le DOM au chargement */
 		$(".jx_table_wrapper[id]").each(function()
 		{
 			new JaxX_table($(this).attr("id"));
 		});
+
+		/* 2. MutationObserver — détecte les tableaux injectés après le DOMContentLoaded
+		      (ex : résultats AJAX, lazy-loading, SPA router)
+		      Initialise automatiquement tout nouveau .jx_table_wrapper[id] */
+		if (typeof MutationObserver !== "undefined")
+		{
+			var observer = new MutationObserver(function(mutations)
+			{
+				$.each(mutations, function(_, mutation)
+				{
+					$.each(mutation.addedNodes, function(_, node)
+					{
+						if (node.nodeType !== 1) return; // Ignorer les noeuds texte
+
+						/* Le noeud lui-même est un wrapper JaxX */
+						if ($(node).is(".jx_table_wrapper[id]"))
+						{
+							new JaxX_table($(node).attr("id"));
+						}
+
+						/* Ou bien un wrapper JaxX se trouve à l'intérieur du noeud injecté */
+						$(node).find(".jx_table_wrapper[id]").each(function()
+						{
+							new JaxX_table($(this).attr("id"));
+						});
+					});
+				});
+			});
+
+			observer.observe(document.body,
+			{
+				childList: true,  // Surveiller les enfants directs
+				subtree:   true   // Et tous les descendants
+			});
+		}
 	});
 
 })(jQuery);
