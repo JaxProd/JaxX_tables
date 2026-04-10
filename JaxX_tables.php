@@ -71,6 +71,8 @@ function return_JaxX_table($array_table)
 
 	// Wrapper principal
 	$export_csv = !empty($array_table['export_csv']) ? "1" : "0";
+	$search_placeholder = htmlspecialchars($array_table['search_placeholder'] ?? 'Rechercher...', ENT_QUOTES);
+	$toolbar_custom = $array_table['toolbar_custom'] ?? '';
 
 	$html .= "
 	<div id='" . $table_id . "'
@@ -81,6 +83,8 @@ function return_JaxX_table($array_table)
 		 data-resizable='" . ($resizable ? "1" : "0") . "'
 		 data-responsive='" . ($responsive ? "1" : "0") . "'
 		 data-export-csv='" . $export_csv . "'
+		 data-search-placeholder='" . $search_placeholder . "'
+		 data-toolbar-custom='" . htmlspecialchars($toolbar_custom, ENT_QUOTES) . "'
 		 data-page='1'>
 	";
 
