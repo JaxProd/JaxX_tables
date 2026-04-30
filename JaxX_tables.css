@@ -7,7 +7,7 @@
  * @link      https://github.com/JaxProd/JaxX_tables
  * @license   CC BY-NC-SA 4.0
  * 
- * Utilisation autorisée pour projets non-commerciaux. 
+ * Utilisation autorisÃ©e pour projets non-commerciaux. 
  * ================================================================
  * FICHIER : JaxX_tables.css
  * EMPLACEMENT : /_modules/JaxX_tables/JaxX_tables.css
@@ -16,9 +16,9 @@
  *               et la structure. Aucune couleur, ombre ou animation.
  *
  * MODIFICATIONS :
- *   - 31/03/2026 17:00 : [IA] Section 14 — poignée de redimensionnement des colonnes.
- *   - 31/03/2026 16:00 : [IA] Header colonne 1 ligne + popover amélioré + date range.
- *   - 31/03/2026 04:46 : [IA] Réécriture — séparation structurel/thème.
+ *   - 31/03/2026 17:00 : [IA] Section 14 â€” poignÃ©e de redimensionnement des colonnes.
+ *   - 31/03/2026 16:00 : [IA] Header colonne 1 ligne + popover amÃ©liorÃ© + date range.
+ *   - 31/03/2026 04:46 : [IA] RÃ©Ã©criture â€” sÃ©paration structurel/thÃ¨me.
  *
  * ================================================================
  */
@@ -52,7 +52,7 @@
     width: 100% !important;
 }
 /* ============================================================
-   3. BARRE DE CONTRÔLES
+   3. BARRE DE CONTRÃ”LES
    ============================================================ */
 .jx_table_controls
 {
@@ -85,7 +85,7 @@
   font-size: 0.9rem;
 }
 
-/* Boutons génériques */
+/* Boutons gÃ©nÃ©riques */
 .jx_bt
 {
   background: none;
@@ -125,7 +125,7 @@
 }
 
 /* ============================================================
-   5. CONTENEUR DE DÉFILEMENT + TABLE
+   5. CONTENEUR DE DÃ‰FILEMENT + TABLE
    ============================================================ */
 .jx_table_scroll_container
 {
@@ -171,7 +171,7 @@
 }
 
 /* ============================================================
-   6. EN-TÊTE (thead)
+   6. EN-TÃŠTE (thead)
    ============================================================ */
 .jx_table_element thead
 {
@@ -227,7 +227,7 @@
     backdrop-filter: blur(4px);
 }
 /* ============================================================
-   7. LIGNES DE DONNÉES (tbody)
+   7. LIGNES DE DONNÃ‰ES (tbody)
    ============================================================ */
 .jx_row
 {
@@ -278,7 +278,7 @@
 
 .jx_expanded .jx_expand_bt { transform: rotate(90deg); }
 
-/* Détails dépliables */
+/* DÃ©tails dÃ©pliables */
 .jx_row_details { display: none; }
 .jx_details_content { padding: 12px 16px; }
 
@@ -304,7 +304,12 @@
 }
 .jx_sort_bt:hover,
 .jx_sort_bt.jx_active { opacity: 1; }
-
+.jx_active span {
+    background-color: var(--cyan-accent);
+    /* width: 1em; */
+    /* padding: .2em; */
+    border-radius: .2em;
+}
 .jx_sort_bt span { font-size: 20px !important; }
 
 .jx_filter_col_bt
@@ -346,11 +351,11 @@ button.jx_copy_btn.jx_copy_row:hover {
 }
 .jx_copy_btn span { font-size: 16px; }
 
-/* Par défaut : caché au desktop, visible au touch */
+/* Par dÃ©faut : cachÃ© au desktop, visible au touch */
 .jx_copy_cell {opacity: 0;transition: opacity 0.2s ease;position: absolute;right: 0;top: 0em;}
 .jx_cell_wrapper:hover .jx_copy_cell { opacity: 1; }
 
-/* Mode table : colonne d'actions cachée */
+/* Mode table : colonne d'actions cachÃ©e */
 .jx_mode_table .jx_cell_actions {/* display: none; */}
 .jx_mode_table .jx_col_actions_header {/* display: none; */}
 
@@ -372,7 +377,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   display: flex;
   flex-wrap: wrap;
   gap: var(--jx-card-gap);
-  /* gap: 15.05% 7%; */
+  gap: 4em;
   padding: 8px;
   justify-content: center;
 }
@@ -506,7 +511,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── Header du popover ── */
+/* â”€â”€ Header du popover â”€â”€ */
 .jx_filter_header
 {
   display: flex;
@@ -526,7 +531,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* ── Section plage de dates ── */
+/* â”€â”€ Section plage de dates â”€â”€ */
 .jx_filter_date_range
 {
   padding: 14px 16px;
@@ -562,7 +567,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
 }
 
-/* ── Barre de recherche interne ── */
+/* â”€â”€ Barre de recherche interne â”€â”€ */
 .jx_filter_search { padding: 10px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 .jx_filter_search input
 {
@@ -584,7 +589,7 @@ button.jx_copy_btn.jx_copy_row:hover {
 }
 .jx_filter_search input::placeholder { color: rgba(255, 255, 255, 0.3); }
 
-/* ── Actions cocher/décocher ── */
+/* â”€â”€ Actions cocher/dÃ©cocher â”€â”€ */
 .jx_filter_check_actions
 {
   display: flex;
@@ -605,7 +610,7 @@ button.jx_copy_btn.jx_copy_row:hover {
 .jx_filter_check_actions button .material-symbols-outlined { font-size: 18px; }
 .jx_filter_check_actions button:hover { color: rgba(255, 255, 255, 0.9); }
 
-/* ── Liste des valeurs checkbox ── */
+/* â”€â”€ Liste des valeurs checkbox â”€â”€ */
 .jx_filter_list
 {
   display: flex !important;
@@ -660,7 +665,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* État coché */
+/* Ã‰tat cochÃ© */
 .jx_filter_item:has(input:checked)::before
 {
   background: #3b82f6;
@@ -694,7 +699,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   text-align: right;
 }
 
-/* ── Boutons granularité date (Jour / Mois / Année) ── */
+/* â”€â”€ Boutons granularitÃ© date (Jour / Mois / AnnÃ©e) â”€â”€ */
 .jx_filter_date_granularity
 {
   display: flex;
@@ -725,7 +730,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   color: #fff;
 }
 
-/* ── Arbre de dates ── */
+/* â”€â”€ Arbre de dates â”€â”€ */
 .jx_date_tree_node { border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
 .jx_date_tree_node:last-child { border-bottom: none; }
 .jx_date_tree_header
@@ -748,7 +753,7 @@ button.jx_copy_btn.jx_copy_row:hover {
 .jx_date_tree_children { padding-left: 16px; }
 .jx_date_tree_sub .jx_date_tree_children { padding-left: 12px; }
 
-/* État indéterminé */
+/* Ã‰tat indÃ©terminÃ© */
 .jx_filter_item:has(input:indeterminate)::before
 {
   background: rgba(59, 130, 246, 0.4);
@@ -765,7 +770,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   font-weight: 900;
 }
 
-/* ── Footer actions ── */
+/* â”€â”€ Footer actions â”€â”€ */
 .jx_filter_actions
 {
   display: flex;
@@ -817,7 +822,7 @@ button.jx_copy_btn.jx_copy_row:hover {
   padding: 40px 20px;
 }
 
-.jx_empty_state span { font-size: 48px; display: block; margin-bottom: 12px; }
+.jx_empty_state span {font-size: 48px;display: block;margin-bottom: 12px;text-align: center;margin: 1em auto;}
 .jx_empty_text { font-size: 0.95rem; }
 
 .jx_table_loader
@@ -885,7 +890,7 @@ body.jx_resizing * { cursor: col-resize !important; }
    ============================================================ */
 .jx_dragging { opacity: 0.5; }
 
-/* Ligne indicatrice de position de dépôt */
+/* Ligne indicatrice de position de dÃ©pÃ´t */
 .jx_drag_indicator
 {
   position: absolute;
@@ -1090,15 +1095,15 @@ body.jx_resizing * { cursor: col-resize !important; }
   font-size: 16px !important;
 }
 
-/* État : Copié avec succès */
+/* Ã‰tat : CopiÃ© avec succÃ¨s */
 .jx_copy_btn.jx_copied
 {
   opacity: 1;
-  color: #00ff88 !important; /* Vert succès */
+  color: #00ff88 !important; /* Vert succÃ¨s */
   transform: scale(1.2);
 }
 
-/* État : En cours de traitement (Copie binaire) */
+/* Ã‰tat : En cours de traitement (Copie binaire) */
 .jx_copy_btn.jx_copying
 {
   opacity: 0.6;
@@ -1111,14 +1116,14 @@ body.jx_resizing * { cursor: col-resize !important; }
   to   { transform: rotate(360deg); }
 }
 
-/* Positionnement spécifique dans la cellule */
+/* Positionnement spÃ©cifique dans la cellule */
 .jx_cell_wrapper .jx_copy_btn
 {
   position: absolute;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  display: none; /* Masqué par défaut, révélé au hover de la cellule */
+  display: none; /* MasquÃ© par dÃ©faut, rÃ©vÃ©lÃ© au hover de la cellule */
 }
 
 .jx_cell:hover .jx_copy_btn

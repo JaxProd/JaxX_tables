@@ -207,7 +207,11 @@ code
 }
 
 .jx_sort_bt:hover { color: var(--sky-400); }
-.jx_sort_bt.jx_active { color: var(--sky-400); }
+.jx_sort_bt.jx_active
+{
+  color: var(--sky-300);
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
+}
 
 /* Boutons de filtre */
 .jx_filter_col_bt
@@ -221,6 +225,12 @@ code
 {
   color: var(--sky-400);
   background: rgba(255, 255, 255, 0.08);
+}
+
+.jx_filter_col_bt.jx_active
+{
+  color: var(--sky-300);
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
 }
 
 /* ============================================================

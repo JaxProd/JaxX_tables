@@ -26,7 +26,6 @@
  *   - [SORT]        : Tri par colonne
  *   - [CLIENTFILTER]: Tri/filtre côté client (statique)
  *   - [COLUMNRESIZE]: Redimensionnement des colonnes
- *   - [TOGGLE]      : Bascule tableau/cartes
  *   - [REVEAL]      : Animation d'apparition des lignes
  *   - [CSV]         : Export CSV
  *   - [COPY]        : Clipboard (cellule, ligne)
@@ -34,6 +33,7 @@
  *   - [AUTOINIT]    : Initialisation automatique
  *
  * MODIFICATIONS :
+ *   - 30/04/2026 : [IA] Mise en évidence des icônes de tri/filtre actifs (persistance + indicateurs).
  *   - 01/04/2026 03:40 : [IA] Ajout des fonctionnalités détaillées et champ LICENCE.
  *   - 31/03/2026 17:00 : [IA] Colonnes redimensionnables + persistence des largeurs.
  *   - 31/03/2026 16:00 : [IA] Filtre date range + popover amélioré + icônes check-actions.
@@ -57,7 +57,7 @@
 
 	// Version du format de state localStorage.
 	// Incrémenter ici après tout changement structurel pour invalider les anciens états.
-	var JX_STATE_VERSION = "5";
+	var JX_STATE_VERSION = "6";
 
 	// Registre global pour permettre le pilotage externe des instances
 	window.JaxX_table_instances = window.JaxX_table_instances || {};
@@ -87,6 +87,7 @@
 		this.wrapper  = $("#" + table_id);
 		this.body     = this.wrapper.find(".jx_table_body");
 		this.ajaxUrl  = this.wrapper.data("ajax-url") || "";
+		this.searchPlaceholder = this.wrapper.data("search-placeholder") || "Rechercher...";
 
 		// Enregistrement de l'instance
 		window.JaxX_table_instances[table_id] = this;
@@ -109,6 +110,7 @@
 			this.page       = 1;
 			this.loading    = false;
 			this.endOfData  = false;
+			this.currentXHR = null;
 			this.sortCol    = "";
 			this.sortDir    = "";
 			this.searchQuery = "";
@@ -151,9 +153,13 @@
 
 			// Barre de recherche globale
 			html += "<div class='jx_search_wrapper'>";
-			html += "<input type='text' class='jx_global_search' placeholder='Rechercher...' value='" + (this.searchQuery || "") + "'>";
+			html += "<input type='text' class='jx_global_search' placeholder='" + this.searchPlaceholder + "' value='" + (this.searchQuery || "") + "'>";
 			html += "<span class='material-symbols-outlined'>search</span>";
 			html += "</div>";
+
+			// Zone de contenu personnalisé (boutons de filtrage rapide, etc.)
+			// Disponible en mode tableau ET cartes
+			html += "<div class='jx_toolbar_custom_content'></div>";
 
 			if (isCards)
 			{
@@ -192,7 +198,16 @@
 				});
 			}
 
+			
 			toolbar.html(html);
+
+			// Injecter le contenu personnalisé fourni par la page (si existant)
+			var customHtml = this.wrapper.data("toolbar-custom") || "";
+			if (customHtml) toolbar.find(".jx_toolbar_custom_content").html(customHtml);
+
+			// Ré-appliquer les indicateurs visuels (tri/filtre) sur les boutons fraîchement rendus
+			this.updateSortIndicators();
+			this.updateFilterIndicators();
 		},
 
 		// ============================================================
@@ -253,7 +268,7 @@
 				self.sortDir = "";
 				self.searchQuery = "";
 				self.wrapper.find(".jx_global_search").val("");
-				self.wrapper.find(".jx_sort_bt").removeClass("jx_active");
+				self.wrapper.find(".jx_sort_bt, .jx_filter_col_bt").removeClass("jx_active");
 
 				// Mode : retour au mode initial (data-attribute PHP)
 				var initialMode = self.wrapper.data("initial-mode") || "table";
@@ -374,7 +389,7 @@
 				var btn = $(this);
 				var colId = btn.closest("th, .jx_toolbar_group").data("col-id");
 				var dir = btn.data("sort");
-				self.applySort(colId, dir, btn);
+				self.applySort(colId, dir);
 			});
 
 			// Expansion de ligne (slideToggle)
@@ -552,7 +567,17 @@
 		_buildFilterPopover: function(colId, colType, btn, valueCounts, currentFilter, checkedValues, isDate)
 		{
 			var self = this;
-			var values = Object.keys(valueCounts).sort();
+			var values = Object.keys(valueCounts);
+			if (colType !== "date")
+			{
+				// Tri par nombre d'occurrences (décroissant)
+				values.sort(function(a, b) { return valueCounts[b] - valueCounts[a]; });
+			}
+			else
+			{
+				// Tri alphabétique/chronologique pour les dates
+				values.sort();
+			}
 
 			var popover = $("<div class='jx_filter_popover jx_popover '></div>").attr("data-col-id", colId);
 
@@ -898,6 +923,7 @@
 				self.filters[colId] = filterData;
 				popover.remove();
 				$(document).off("click.jx_pop_outer");
+				self.updateFilterIndicators();
 				self.refresh();
 			});
 
@@ -907,6 +933,7 @@
 				delete self.filters[colId];
 				popover.remove();
 				$(document).off("click.jx_pop_outer");
+				self.updateFilterIndicators();
 				self.refresh();
 			});
 		},
@@ -1229,6 +1256,8 @@
 				mode:    this.wrapper.hasClass("jx_mode_cards") ? "cards" : "table",
 				order:   order,
 				filters: this.filters,
+				sortCol: this.sortCol || "",
+				sortDir: this.sortDir || "",
 				widths:  widths,
 				hidden:  hidden
 			};
@@ -1250,6 +1279,8 @@
 				return;
 			}
 			this.filters = state.filters || {};
+			this.sortCol = state.sortCol || "";
+			this.sortDir = state.sortDir || "";
 
 			var btn = this.wrapper.find(".jx_bt_mode_toggle span");
 			if (state.mode === "cards")
@@ -1321,6 +1352,10 @@
 				if (totalWidth > 0) table.css("width", totalWidth + "px");
 				table.css("table-layout", "fixed");
 			}
+
+			// Restaurer les indicateurs visuels (tri/filtre actifs)
+			this.updateSortIndicators();
+			this.updateFilterIndicators();
 		},
 
 		// ============================================================
@@ -1396,22 +1431,59 @@
 		// ============================================================
 		reloadFromServer: function()
 		{
-			this.page      = 1;
-			this.endOfData = false;
+			// Annuler toute requête AJAX en cours
+			if (this.currentXHR)
+			{
+				this.currentXHR.abort();
+				this.currentXHR = null;
+			}
+			this.loading    = false;
+			this.page       = 1;
+			this.endOfData  = false;
 			this.noMoreDataCooldown = false;
 			this.body.find(".jx_row_end_message").remove();
 			this.loadLines(false);
 		},
 
 		// ============================================================
-		// [CTRL+D] [SORT]
+		// [CTRL+D] [INDICATORS] Mise en évidence tri/filtre actifs
 		// ============================================================
-		applySort: function(colId, dir, btn)
+		isFilterActive: function(filterData)
+		{
+			if (!filterData) return false;
+			if (filterData.checked && filterData.checked.length > 0) return true;
+			if (filterData.dateFrom || filterData.dateTo) return true;
+			return false;
+		},
+
+		updateFilterIndicators: function()
+		{
+			var self = this;
+			// Thead (mode table) + toolbar (mode cards)
+			this.wrapper.find(".jx_filter_col_bt").removeClass("jx_active");
+			$.each(this.filters, function(colId, filterData)
+			{
+				if (!self.isFilterActive(filterData)) return;
+				self.wrapper.find("th[data-col-id='" + colId + "'] .jx_filter_col_bt, .jx_toolbar_group[data-col-id='" + colId + "'] .jx_filter_col_bt").addClass("jx_active");
+			});
+		},
+
+		updateSortIndicators: function()
 		{
 			this.wrapper.find(".jx_sort_bt").removeClass("jx_active");
-			btn.addClass("jx_active");
+			if (!this.sortCol || !this.sortDir) return;
+			var dirClass = (this.sortDir === "asc") ? ".jx_sort_asc" : ".jx_sort_desc";
+			this.wrapper.find("th[data-col-id='" + this.sortCol + "'] " + dirClass + ", .jx_toolbar_group[data-col-id='" + this.sortCol + "'] " + dirClass).addClass("jx_active");
+		},
+
+		// ============================================================
+		// [CTRL+D] [SORT]
+		// ============================================================
+		applySort: function(colId, dir)
+		{
 			this.sortCol = colId;
 			this.sortDir = dir;
+			this.updateSortIndicators();
 
 			if (this.ajaxUrl) this.reloadFromServer();
 			else this.refresh();
@@ -1851,10 +1923,11 @@
 			// Afficher le loader proprement
 			this.wrapper.find(".jx_table_loader").stop(true, true).fadeIn(200);
 
-			$.ajax({
+			this.currentXHR = $.ajax({
 				url: this.ajaxUrl,
 				method: "POST",
 				data: {
+					action:    "get_jaxx_table_data",
 					table_id:  this.tableId,
 					page:      this.page,
 					query:     this.searchQuery,
@@ -1862,24 +1935,53 @@
 					sort_dir:  this.sortDir  || "",
 					filters:   JSON.stringify(this.filters)
 				},
-				success: function(html)
+				success: function(response)
 				{
+					self.currentXHR = null;
 					self.wrapper.find(".jx_table_loader").stop(true, true).hide();
+
+					var html = "";
+					// Si la réponse est un objet (JSON parsé par jQuery)
+					if (typeof response === "object" && response !== null)
+					{
+						html = response.html || "";
+						if (response.total_items !== undefined) self.totalItems = response.total_items;
+						if (response.end_of_data !== undefined) self.endOfData = response.end_of_data;
+					}
+					else
+					{
+						html = response || "";
+					}
 
 					if (!html.trim()) 
 					{ 
 						self.loading = false; 
 
-						// On affiche le message de fin seulement s'il n'existe pas déjà
-						if (self.body.find(".jx_row_end_message").length === 0)
+						// En mode remplacement (pas append), c'est une recherche/filtre sans résultat
+						if (!append)
 						{
 							var colCount = self.wrapper.find("thead th").length || 10;
-							self.body.append("<tr class='jx_row_end_message'><td colspan='" + colCount + "' style='text-align:center; padding:20px; opacity:0.6; font-style:italic;'>— Fin du tableau —</td></tr>");
+							self.body.html(
+								"<tr class='jx_no_data'><td colspan='" + colCount + "'>" +
+								"<div class='jx_empty_state'>" +
+								"<span class='material-symbols-outlined'>database_off</span>" +
+								"<div class='jx_empty_text'>Aucune donn\u00e9e n'a \u00e9t\u00e9 trouv\u00e9e</div>" +
+								"</div></td></tr>"
+							);
 						}
+						else
+						{
+							// En mode append (scroll infini), c'est la fin des données
+							if (self.body.find(".jx_row_end_message").length === 0)
+							{
+								var colCount = self.wrapper.find("thead th").length || 10;
+								self.body.append("<tr class='jx_row_end_message'><td colspan='" + colCount + "' style='text-align:center; padding:20px; opacity:0.6; font-style:italic;'>\u2014 Fin du tableau \u2014</td></tr>");
+							}
 
-						// "Au cas où" : on active un cooldown de 5s avant de pouvoir retenter
-						self.noMoreDataCooldown = true;
-						setTimeout(function() { self.noMoreDataCooldown = false; }, 5000);
+							// Cooldown de 5s
+							self.noMoreDataCooldown = true;
+							setTimeout(function() { self.noMoreDataCooldown = false; }, 5000);
+						}
 						return; 
 					}
 
@@ -1909,9 +2011,16 @@
 					if (self.wrapper.hasClass("jx_mode_cards")) self.injectCardInfoButtons();
 					self.revealLines();
 					self.applyMarking();
+
+					// Déclenchement d'un événement global pour les scripts tiers
+					$(document).trigger('jaxx_table_loaded', [self.tableId, self]);
 				},
-				error: function()
+
+				error: function(jqXHR, textStatus)
 				{
+					self.currentXHR = null;
+					// Ne pas traiter les erreurs d'abort (c'est normal lors d'un reloadFromServer)
+					if (textStatus === "abort") return;
 					self.wrapper.find(".jx_table_loader").stop(true, true).hide();
 					self.loading = false;
 				}

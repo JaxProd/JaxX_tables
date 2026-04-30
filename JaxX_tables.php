@@ -52,7 +52,11 @@ function return_JaxX_table($array_table)
 	$display_mode = $array_table["display_mode"] ?? "table";
 	$resizable    = $array_table["resizable"]    ?? true;   // true = colonnes redimensionnables
 	$responsive   = $array_table["responsive"]   ?? false;  // true = passage auto en cartes sur mobile
+	$copiable_row = $array_table["copiable_row"] ?? true;   // true = colonne d'actions (copie ligne)
+	$copiable_cells = $array_table["copiable_cells"] ?? true; // true = boutons de copie dans les cellules
 	$array_table["_resizable"] = $resizable; // transmis aux sous-fonctions
+	$array_table["_copiable_row"] = $copiable_row;
+	$array_table["_copiable_cells"] = $copiable_cells;
 
 	// Auto-détection : au moins une ligne a du contenu expandable ?
 	$has_expand = false;
@@ -132,7 +136,10 @@ function return_JaxX_title_cells($array_table)
 		$html .= "<th class='jx_col_expand_header'></th>";
 	}
 	// Colonne d'actions (copie, etc.) - vide en header
-	$html .= "<th class='jx_col_actions_header'></th>";
+	if (!empty($array_table["_copiable_row"]))
+	{
+		$html .= "<th class='jx_col_actions_header'></th>";
+	}
 
 	foreach ($array_table["columns"] as $col_id => $col)
 	{
@@ -188,7 +195,8 @@ function return_JaxX_lines($array_table)
 {
 	$html = "";
 	$has_expand = $array_table["_has_expand"] ?? !empty($array_table["expandable"]);
-	$col_count = count($array_table["columns"] ?? []) + ($has_expand ? 2 : 1);
+	$copiable_row = !empty($array_table["_copiable_row"]);
+	$col_count = count($array_table["columns"] ?? []) + ($has_expand ? 1 : 0) + ($copiable_row ? 1 : 0);
 
 	if (!empty($array_table["data"]))
 	{
@@ -218,12 +226,15 @@ function return_JaxX_lines($array_table)
 				$html .= "</td>";
 			}
 			// Cellule d'actions (copy bouton)
-			$html .= "
-			<td class='jx_cell jx_cell_actions'>
-				<button class='jx_copy_btn jx_copy_row' title='Copier toute la carte'>
-					<span class='material-symbols-outlined'>content_copy</span>
-				</button>
-			</td>";
+			if (!empty($array_table["_copiable_row"]))
+			{
+				$html .= "
+				<td class='jx_cell jx_cell_actions'>
+					<button class='jx_copy_btn jx_copy_row' title='Copier toute la carte'>
+						<span class='material-symbols-outlined'>content_copy</span>
+					</button>
+				</td>";
+			}
 
 
 			foreach ($array_table["columns"] as $col_id => $col)
@@ -232,13 +243,20 @@ function return_JaxX_lines($array_table)
 				$col_label = $col["label"] ?? $col_id;
 
 				$html .= "<td class='jx_cell jx_col_" . $col_id . "' data-label='" . $col_label . "'>";
-				$html .= "
-					<div class='jx_cell_wrapper'>
-						<div class='jx_cell_val'>" . $val . "</div>
-						<button class='jx_copy_btn jx_copy_cell' title='Copier cette donnée' data-copy='" . strip_tags($val) . "'>
-							<span class='material-symbols-outlined'>content_copy</span>
-						</button>
-					</div>";
+				if (!empty($array_table["_copiable_cells"]))
+				{
+					$html .= "
+						<div class='jx_cell_wrapper'>
+							<div class='jx_cell_val'>" . $val . "</div>
+							<button class='jx_copy_btn jx_copy_cell' title='Copier cette donnée' data-copy='" . strip_tags($val) . "'>
+								<span class='material-symbols-outlined'>content_copy</span>
+							</button>
+						</div>";
+				}
+				else
+				{
+					$html .= "<div class='jx_cell_val'>" . $val . "</div>";
+				}
 				$html .= "</td>";
 			}
 
