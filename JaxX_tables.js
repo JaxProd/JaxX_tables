@@ -308,19 +308,7 @@
 					});
 
 					// Même ordre dans le body
-					self.body.find("tr.jx_row").each(function()
-					{
-						var row = $(this);
-						$.each(origOrderFull, function(_, item)
-						{
-							var td;
-							if (item.type === "data") td = row.find("td.jx_col_" + item.id);
-							else if (item.type === "actions") td = row.find(".jx_cell_actions");
-							else if (item.type === "expand") td = row.find(".jx_col_expand_trigger");
-
-							if (td && td.length) row.append(td);
-						});
-					});
+					self.syncBodyOrder();
 				}
 
 				// Fermer les popovers ouverts
@@ -1151,11 +1139,17 @@
 
 			this.wrapper.on("dragstart", "th", function(e)
 			{
-				e.originalEvent.dataTransfer.setData("text/plain", $(this).data("col-id"));
+				var colId = $(this).data("col-id");
+				if (!colId)
+				{
+					if ($(this).hasClass("jx_col_actions_header")) colId = "__jx_actions";
+					else if ($(this).hasClass("jx_col_expand_header")) colId = "__jx_expand";
+				}
+				e.originalEvent.dataTransfer.setData("text/plain", colId);
 				$(this).addClass("jx_dragging");
 			});
 
-			this.wrapper.on("dragover", "th[data-col-id]", function(e)
+			this.wrapper.on("dragover", "th", function(e)
 			{
 				e.preventDefault();
 
@@ -1180,7 +1174,7 @@
 				}
 			});
 
-			this.wrapper.on("dragleave", "th[data-col-id]", function(e)
+			this.wrapper.on("dragleave", "th", function(e)
 			{
 				// Masquer seulement si on quitte vers l'extérieur du thead
 				if (!$(e.relatedTarget).closest("thead").length)
@@ -1195,31 +1189,26 @@
 				$(this).removeClass("jx_dragging");
 			});
 
-			this.wrapper.on("drop", "th[data-col-id]", function(e)
+			this.wrapper.on("drop", "th", function(e)
 			{
 				e.preventDefault();
 				$indicator.hide();
 
 				var srcColId  = e.originalEvent.dataTransfer.getData("text/plain");
-				var destColId = $(this).data("col-id");
+				var $srcTh;
+				
+				if (srcColId === "__jx_actions") $srcTh = self.wrapper.find(".jx_col_actions_header");
+				else if (srcColId === "__jx_expand") $srcTh = self.wrapper.find(".jx_col_expand_header");
+				else $srcTh = self.wrapper.find("th[data-col-id='" + srcColId + "']");
 
-				if (srcColId && destColId && srcColId !== destColId)
+				var $destTh = $(this);
+
+				if ($srcTh.length && $destTh.length && $srcTh[0] !== $destTh[0])
 				{
-					var srcTh  = self.wrapper.find("th[data-col-id='" + srcColId + "']");
-					var destTh = $(this);
+					if (dropSide === "after") $destTh.after($srcTh);
+					else $destTh.before($srcTh);
 
-					if (dropSide === "after") destTh.after(srcTh);
-					else destTh.before(srcTh);
-
-					self.body.find("tr.jx_row").each(function()
-					{
-						var row   = $(this);
-						var srcTd = row.find(".jx_col_" + srcColId);
-						var destTd = row.find(".jx_col_" + destColId);
-						if (dropSide === "after") destTd.after(srcTd);
-						else destTd.before(srcTd);
-					});
-
+					self.syncBodyOrder();
 					self.saveState();
 				}
 
@@ -1323,17 +1312,11 @@
 					if (th && th.length)
 					{
 						headerRow.append(th);
-						self.body.find("tr.jx_row").each(function()
-						{
-							var td;
-							if (type === "data") td = $(this).find("td.jx_col_" + colId);
-							else if (type === "actions") td = $(this).find(".jx_cell_actions");
-							else if (type === "expand") td = $(this).find(".jx_col_expand_trigger");
-
-							if (td && td.length) $(this).append(td);
-						});
 					}
 				});
+				
+				// Synchroniser le body
+				this.syncBodyOrder();
 			}
 
 			// Restaurer les colonnes masquées
@@ -2006,12 +1989,10 @@
 					self.page++;
 					self.loading = false;
 
+					// Re-appliquer l'ordre des colonnes actuel (header -> body) sur les nouvelles lignes
+					self.syncBodyOrder();
+
 					// Re-appliquer les colonnes masquées sur les nouvelles lignes
-					self.wrapper.find("thead th[data-col-id].jx_col_hidden").each(function()
-					{
-						var colId = $(this).data("col-id");
-						self.body.find("td.jx_col_" + colId).addClass("jx_col_hidden");
-					});
 
 					// Si des lignes AJAX ont du contenu expand, afficher la colonne expand du thead
 					if (self.body.find(".jx_row_details").length > 0)
@@ -2035,6 +2016,47 @@
 					self.wrapper.find(".jx_table_loader").stop(true, true).hide();
 					self.loading = false;
 				}
+			});
+		},
+
+		/**
+		 * Synchronise l'ordre des colonnes du body (TD) sur celui du header (TH).
+		 * À appeler après un drag&drop, un reset, ou un chargement AJAX.
+		 */
+		syncBodyOrder: function()
+		{
+			var self = this;
+			var headerCols = [];
+			
+			// 1. Lire l'ordre actuel dans le header
+			this.wrapper.find("thead tr th").each(function()
+			{
+				var $th = $(this);
+				var colId = $th.data("col-id");
+				if (colId) headerCols.push({ type: "data", id: colId, th: $th });
+				else if ($th.hasClass("jx_col_actions_header")) headerCols.push({ type: "actions", th: $th });
+				else if ($th.hasClass("jx_col_expand_header"))  headerCols.push({ type: "expand", th: $th });
+			});
+
+			// 2. Réordonner et synchroniser la visibilité de chaque ligne du body
+			this.body.find("tr.jx_row").each(function()
+			{
+				var $row = $(this);
+				$.each(headerCols, function(_, col)
+				{
+					var $td;
+					if (col.type === "data") $td = $row.find("td.jx_col_" + col.id);
+					else if (col.type === "actions") $td = $row.find(".jx_cell_actions");
+					else if (col.type === "expand") $td = $row.find(".jx_col_expand_trigger");
+					
+					if ($td && $td.length)
+					{
+						$row.append($td);
+						// Synchroniser la visibilité avec le header
+						if (col.th.hasClass("jx_col_hidden")) $td.addClass("jx_col_hidden");
+						else $td.removeClass("jx_col_hidden");
+					}
+				});
 			});
 		}
 	};
