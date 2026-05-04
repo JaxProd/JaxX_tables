@@ -115,6 +115,7 @@
 			this.sortDir    = "";
 			this.searchQuery = "";
 			this.filters    = {};
+			this.userManualMode = false; // true si l'utilisateur a cliqué manuellement sur le toggle
 
 			// Sauvegarder l'ordre initial des colonnes (avant loadState)
 			var origOrder = [];
@@ -267,6 +268,7 @@
 				self.sortCol = "";
 				self.sortDir = "";
 				self.searchQuery = "";
+				self.userManualMode = false; // Reset du choix manuel
 				self.wrapper.find(".jx_global_search").val("");
 				self.wrapper.find(".jx_sort_bt, .jx_filter_col_bt").removeClass("jx_active");
 
@@ -1100,6 +1102,10 @@
 
 			function applyResponsive()
 			{
+				// Si l'utilisateur a cliqué manuellement sur le toggle,
+				// on respecte son choix et on ne force pas le changement
+				if (self.userManualMode) return;
+
 				var isNarrow = $(window).width() < BREAKPOINT;
 				var isCards  = self.wrapper.hasClass("jx_mode_cards");
 
@@ -1119,7 +1125,7 @@
 				}
 			}
 
-			// Appliquer au chargement
+			// Appliquer au chargement (seulement si pas de choix manuel persisté)
 			applyResponsive();
 
 			// Réévaluer au resize de la fenêtre (debounce 150ms)
@@ -1254,6 +1260,7 @@
 			var state = {
 				v:       JX_STATE_VERSION,
 				mode:    this.wrapper.hasClass("jx_mode_cards") ? "cards" : "table",
+				userManualMode: this.userManualMode || false,
 				order:   order,
 				filters: this.filters,
 				sortCol: this.sortCol || "",
@@ -1281,6 +1288,7 @@
 			this.filters = state.filters || {};
 			this.sortCol = state.sortCol || "";
 			this.sortDir = state.sortDir || "";
+			this.userManualMode = state.userManualMode || false;
 
 			var btn = this.wrapper.find(".jx_bt_mode_toggle span");
 			if (state.mode === "cards")
@@ -1594,6 +1602,9 @@
 		{
 			var self = this;
 			var btn = this.wrapper.find(".jx_bt_mode_toggle span");
+
+			// Marquer le choix comme manuel (empêche le responsive auto d'écraser)
+			this.userManualMode = true;
 
 			this.wrapper.addClass("jx_mode_changing");
 
