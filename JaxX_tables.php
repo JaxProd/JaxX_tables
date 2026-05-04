@@ -195,7 +195,8 @@ function return_JaxX_lines($array_table)
 {
 	$html = "";
 	$has_expand = $array_table["_has_expand"] ?? !empty($array_table["expandable"]);
-	$copiable_row = !empty($array_table["_copiable_row"]);
+	$copiable_row = isset($array_table["_copiable_row"]) ? !empty($array_table["_copiable_row"]) : ($array_table["copiable_row"] ?? true);
+	$copiable_cells = isset($array_table["_copiable_cells"]) ? !empty($array_table["_copiable_cells"]) : ($array_table["copiable_cells"] ?? true);
 	$col_count = count($array_table["columns"] ?? []) + ($has_expand ? 1 : 0) + ($copiable_row ? 1 : 0);
 
 	if (!empty($array_table["data"]))
@@ -226,7 +227,7 @@ function return_JaxX_lines($array_table)
 				$html .= "</td>";
 			}
 			// Cellule d'actions (copy bouton)
-			if (!empty($array_table["_copiable_row"]))
+			if ($copiable_row)
 			{
 				$html .= "
 				<td class='jx_cell jx_cell_actions'>
@@ -243,7 +244,7 @@ function return_JaxX_lines($array_table)
 				$col_label = $col["label"] ?? $col_id;
 
 				$html .= "<td class='jx_cell jx_col_" . $col_id . "' data-label='" . $col_label . "'>";
-				if (!empty($array_table["_copiable_cells"]))
+				if ($copiable_cells)
 				{
 					$html .= "
 						<div class='jx_cell_wrapper'>
