@@ -57,7 +57,7 @@
 
 	// Version du format de state localStorage.
 	// Incrémenter ici après tout changement structurel pour invalider les anciens états.
-	var JX_STATE_VERSION = "6";
+	var JX_STATE_VERSION = "7";
 
 	// Registre global pour permettre le pilotage externe des instances
 	window.JaxX_table_instances = window.JaxX_table_instances || {};
@@ -119,11 +119,14 @@
 
 			// Sauvegarder l'ordre initial des colonnes (avant loadState)
 			var origOrder = [];
-			this.wrapper.find("thead th[data-col-id]").each(function()
+			this.wrapper.find("thead th").each(function()
 			{
-				origOrder.push($(this).data("col-id"));
+				var colId = $(this).data("col-id");
+				if (colId) origOrder.push({ type: "data", id: colId });
+				else if ($(this).hasClass("jx_col_actions_header")) origOrder.push({ type: "actions" });
+				else if ($(this).hasClass("jx_col_expand_header"))  origOrder.push({ type: "expand" });
 			});
-			this.wrapper.data("original-order", origOrder);
+			this.wrapper.data("original-order-full", origOrder);
 
 			this.loadState();
 			this.renderToolbar();
@@ -289,39 +292,34 @@
 
 				// Ordre des colonnes : remettre l'ordre PHP d'origine
 				var headerRow = self.wrapper.find("thead tr");
-				var origOrder = self.wrapper.data("original-order");
-				if (origOrder && origOrder.length)
+				// Ordre des colonnes : remettre l'ordre PHP d'origine
+				var headerRow = self.wrapper.find("thead tr");
+				var origOrderFull = self.wrapper.data("original-order-full");
+				if (origOrderFull && origOrderFull.length)
 				{
-					$.each(origOrder, function(_, colId)
+					$.each(origOrderFull, function(_, item)
 					{
-						var th = headerRow.find("th[data-col-id='" + colId + "']");
-						if (th.length) headerRow.append(th);
+						var th;
+						if (item.type === "data") th = headerRow.find("th[data-col-id='" + item.id + "']");
+						else if (item.type === "actions") th = headerRow.find(".jx_col_actions_header");
+						else if (item.type === "expand") th = headerRow.find(".jx_col_expand_header");
+						
+						if (th && th.length) headerRow.append(th);
 					});
-					// Colonnes structurelles
-					var expandHeader = headerRow.find(".jx_col_expand_header");
-					if (expandHeader.length) headerRow.prepend(expandHeader);
-					var actionsHeader = headerRow.find(".jx_col_actions_header");
-					if (actionsHeader.length)
-					{
-						expandHeader.length ? expandHeader.after(actionsHeader) : headerRow.prepend(actionsHeader);
-					}
 
 					// Même ordre dans le body
 					self.body.find("tr.jx_row").each(function()
 					{
 						var row = $(this);
-						$.each(origOrder, function(_, colId)
+						$.each(origOrderFull, function(_, item)
 						{
-							var td = row.find("td.jx_col_" + colId);
-							if (td.length) row.append(td);
+							var td;
+							if (item.type === "data") td = row.find("td.jx_col_" + item.id);
+							else if (item.type === "actions") td = row.find(".jx_cell_actions");
+							else if (item.type === "expand") td = row.find(".jx_col_expand_trigger");
+
+							if (td && td.length) row.append(td);
 						});
-						var expandTd = row.find(".jx_col_expand_trigger");
-						if (expandTd.length) row.prepend(expandTd);
-						var actionsTd = row.find(".jx_cell_actions");
-						if (actionsTd.length)
-						{
-							expandTd.length ? expandTd.after(actionsTd) : row.prepend(actionsTd);
-						}
 					});
 				}
 
@@ -1235,7 +1233,13 @@
 		saveState: function()
 		{
 			var order = [];
-			this.wrapper.find("thead th[data-col-id]").each(function() { order.push($(this).data("col-id")); });
+			this.wrapper.find("thead th").each(function()
+			{
+				var colId = $(this).data("col-id");
+				if (colId) order.push({ type: "data", id: colId });
+				else if ($(this).hasClass("jx_col_actions_header")) order.push({ type: "actions" });
+				else if ($(this).hasClass("jx_col_expand_header"))  order.push({ type: "expand" });
+			});
 
 			// Sauvegarder les largeurs si table-layout:fixed est actif
 			var widths = null;
@@ -1306,33 +1310,29 @@
 			{
 				var headerRow = this.wrapper.find("thead tr");
 				var self = this;
-				$.each(state.order, function(i, colId)
+				$.each(state.order, function(i, item)
 				{
-					var th = headerRow.find("th[data-col-id='" + colId + "']");
-					if (th.length)
+					var th;
+					var colId = (typeof item === "string") ? item : item.id;
+					var type  = (typeof item === "string") ? "data" : item.type;
+
+					if (type === "data") th = headerRow.find("th[data-col-id='" + colId + "']");
+					else if (type === "actions") th = headerRow.find(".jx_col_actions_header");
+					else if (type === "expand") th = headerRow.find(".jx_col_expand_header");
+					
+					if (th && th.length)
 					{
 						headerRow.append(th);
 						self.body.find("tr.jx_row").each(function()
 						{
-							var td = $(this).find("td.jx_col_" + colId);
-							if (td.length) $(this).append(td);
+							var td;
+							if (type === "data") td = $(this).find("td.jx_col_" + colId);
+							else if (type === "actions") td = $(this).find(".jx_cell_actions");
+							else if (type === "expand") td = $(this).find(".jx_col_expand_trigger");
+
+							if (td && td.length) $(this).append(td);
 						});
 					}
-				});
-
-				// Remettre les colonnes structurelles à leur place (expand en premier, actions en dernier)
-				var expandHeader = headerRow.find(".jx_col_expand_header");
-				if (expandHeader.length) headerRow.prepend(expandHeader);
-				var actionsHeader = headerRow.find(".jx_col_actions_header");
-				if (actionsHeader.length) headerRow.append(actionsHeader);
-
-				// Idem pour les cellules body
-				this.body.find("tr.jx_row").each(function()
-				{
-					var expandTd = $(this).find(".jx_col_expand_trigger");
-					if (expandTd.length) $(this).prepend(expandTd);
-					var actionsTd = $(this).find(".jx_cell_actions");
-					if (actionsTd.length) $(this).append(actionsTd);
 				});
 			}
 
