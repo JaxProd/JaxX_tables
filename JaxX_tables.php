@@ -242,9 +242,15 @@ function return_JaxX_lines($array_table)
 			{
 				$val = $row[$col_id] ?? "";
 				$col_label = $col["label"] ?? $col_id;
+				$is_cell_copiable = $copiable_cells && (!isset($col["copiable"]) || $col["copiable"] !== false);
+
+				// Si la valeur contient le flag de données masquées, on force la désactivation de la copie
+				if (strpos($val, 'jx_no_copy') !== false) {
+					$is_cell_copiable = false;
+				}
 
 				$html .= "<td class='jx_cell jx_col_" . $col_id . "' data-label='" . $col_label . "'>";
-				if ($copiable_cells)
+				if ($is_cell_copiable && trim(strip_tags($val)) !== '')
 				{
 					$html .= "
 						<div class='jx_cell_wrapper'>
