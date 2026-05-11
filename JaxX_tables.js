@@ -167,6 +167,7 @@
 
 			if (isCards)
 			{
+				html += "<div class='jx_filters_wrapper'>";
 				html += "<div class='jx_toolbar_label'>Filtrer & trier :</div>";
 				this.wrapper.find("thead th[data-col-id]").each(function()
 				{
@@ -200,6 +201,7 @@
 						html += "</div>";
 					}
 				});
+				html += "</div>";
 			}
 
 			
@@ -649,9 +651,10 @@
 				{
 					var all = isAllChecked(raws);
 					var some = !all && isSomeChecked(raws);
+					var safeRaws = raws.join("|").replace(/"/g, '&quot;');
 					var $el = $(
 						"<label class='jx_filter_item " + cls + "'>" +
-							"<input type='checkbox' data-raw='" + raws.join("|") + "'" + (all ? " checked" : "") + ">" +
+							"<input type='checkbox' data-raw=\"" + safeRaws + "\"" + (all ? " checked" : "") + ">" +
 							"<span class='jx_filter_val'>" + label + "</span>" +
 							"<span class='jx_filter_count'>" + count + "</span>" +
 						"</label>"
@@ -816,10 +819,11 @@
 				$.each(values, function(i, val)
 				{
 					var checked = (checkedValues.indexOf(val) !== -1) ? "checked" : "";
+					var safeVal = val.replace(/"/g, '&quot;');
 					var count = valueCounts[val] || 0;
 					list.append(
 						"<label class='jx_filter_item'>" +
-							"<input type='checkbox' value='" + val + "' " + checked + ">" +
+							"<input type='checkbox' value=\"" + safeVal + "\" " + checked + ">" +
 							"<span class='jx_filter_val'>" + (val || "(vide)") + "</span>" +
 							"<span class='jx_filter_count'>" + count + "</span>" +
 						"</label>"

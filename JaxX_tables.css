@@ -74,6 +74,9 @@
   gap: 6px;
   flex: 1;
   max-width: 300px;
+  border: #6666663b 1px solid;
+  border-radius: var(--border-radius);
+  padding-right: 1.4em;
 }
 
 .jx_search_wrapper input
@@ -216,15 +219,17 @@
 
 .jx_table_element thead
 {
-  /* background-image: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.9)); */
   position: sticky;
   top: 0;
   z-index: 10;
   background: unset;
-  background-color: #161b2db3;
+  background-color: #161b2de6; /* Un peu plus opaque pour mieux diffuser le flou */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
+/* On enlève le flou du tr qui peut poser problème au rendu */
 .jx_table_element thead tr {
-    backdrop-filter: blur(4px);
+    backdrop-filter: none;
 }
 /* ============================================================
    7. LIGNES DE DONNÃ‰ES (tbody)
@@ -304,12 +309,7 @@
 }
 .jx_sort_bt:hover,
 .jx_sort_bt.jx_active { opacity: 1; }
-.jx_active span {
-    background-color: var(--cyan-accent);
-    /* width: 1em; */
-    /* padding: .2em; */
-    border-radius: .2em;
-}
+
 .jx_sort_bt span { font-size: 20px !important; }
 
 .jx_filter_col_bt
@@ -325,7 +325,11 @@
   transition: opacity 0.15s;
 }
 .jx_filter_col_bt:hover,
-.jx_filter_col_bt.jx_active { opacity: 1; }
+.jx_filter_col_bt.jx_active {opacity: 1;color: var(--cyan-400);}
+
+button.jx_filter_col_bt.jx_active span {
+    color: var(--cyan-400) !important;
+}
 
 .jx_filter_col_bt span { font-size: 16px; }
 
